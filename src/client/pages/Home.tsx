@@ -388,7 +388,7 @@ export default function Home() {
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										here
+										on Patreon here
 									</a>
 									{'.\n              '}
 								</p>
