@@ -5,8 +5,8 @@
 	"mirrorLinksFile": "private/mirror-links.txt",
 	"minifyScripts": true,
 	"disguiseFiles": true,
-	"usingSEO": false,
+	"usingSEO": true,
 	"verbose": true,
 	"port": 8080,
-	"showSplash": false
+	"showSplash": true
 }
