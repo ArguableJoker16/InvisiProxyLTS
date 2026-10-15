@@ -33,7 +33,7 @@ const wispConfig = {
 	allowUDP: false,
 	allowDirectIP: false,
 	allowPrivateIPs: false,
-	allowLoopbackIPs: false,
+	allowLoopbackIPs: true,
 	tcpBufferSize: 262144,
 	socketBufferSize: 16777216,
 	pendingQueueSize: 33554432,
@@ -45,7 +45,7 @@ const wispConfig = {
 	},
 	whitelist: {
 		hostnames: [],
-		ports: [],
+		ports: [80, 443, 9050, 7000, 7001, 7002],
 	},
 	websocketPermessageDeflate: false,
 	frameObfuscation: {
