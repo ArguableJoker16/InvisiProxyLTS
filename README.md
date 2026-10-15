@@ -142,8 +142,9 @@ git clone https://github.com/InvisiProxy/InvisiProxyLTS.git
 cd InvisiProxy
 
 # Edit config.js and set production to true if you want to use pm2 (Allows for easier VPS hosting)
-pnpm run fresh-install
-pnpm run fetch-adblock
+pnpm install
+pnpm fetch-adblock
+pnpm build
 pnpm start
 
 # Or on subsequent uses...
@@ -179,11 +180,11 @@ If you wish to self-host however you will first need a VPS or hosting provider:
 
 ### Dependencies
 
-You will then need to setup git, nginx (or caddy) and Node.js. Here is an example for Ubuntu LTS:
+You will then need to setup git, musl, nginx (or caddy) and Node.js. Here is an example for Ubuntu LTS:
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install curl git nginx
+sudo apt install curl git nginx musl
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
@@ -258,14 +259,14 @@ Alternative Guide (for CLI): https://community.torproject.org/onion-services/set
 
 If you are hosting InvisiProxy LTS on a VPS utilizing Ubuntu consider attaching Tor to systemctl for easier production management. Once Tor is up and running on either Linux or Windows it will work automatically with InvisiProxy LTS when enabled by the user via the Settings menu.
 
-If you wish to use a custom HTTP/HTTPS/SOCKS5 proxy to route all traffic through for Scramjet and Ultraviolet this is handled in `./views/assets/js/register-sw.js.` Modify `proxyUrl` with the respective protocol and address. This is done via the proxy option for Wisp. You can change the cases as needed.
+If you wish to use a custom HTTP/HTTPS/SOCKS5 proxy to route traffic for Scramjet this is handled on the server in `./src/server/wisp.ts`.
 
-```js
-  proxyUrl = {
-    tor: 'socks5h://localhost:9050',
-    eu: 'socks5h://localhost:7000',
-    jp: 'socks5h://localhost:7001',
-  }
+```ts
+export const wispProxies = {
+  tor: 'socks5h://127.0.0.1:9050',
+  eu: 'socks5h://127.0.0.1:7000',
+  jp: 'socks5h://127.0.0.1:7001',
+}
 ```
 
 #### Proxy Configuration

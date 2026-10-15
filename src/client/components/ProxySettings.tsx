@@ -21,6 +21,7 @@ export default function ProxySettings() {
 								<option value="off">Default</option>
 								<option value="eu">Sweden</option>
 								<option value="jp">Japan</option>
+								<option value="patreon">Patreon</option>
 							</select>
 						</div>
 						<SettingToggle
