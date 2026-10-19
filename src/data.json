@@ -554,6 +554,6 @@
     "Tip: Getting 502 errors with Cloudflare? Check the GitHub to report the issue or reload the page! Sometimes it may just be a small issue. Enable Tor routing or swap transport methods in case the issue persists."
   ],
   "version": [
-    "8.1.0"
+    "8.1.1"
   ]
 }
