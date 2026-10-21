@@ -45,7 +45,7 @@
 		"send": "^1.2.1",
 		"solid-js": "^1.9.17",
 		"utf-8-validate": "^6.0.6",
-		"wispurr": "^4.2.1",
+		"wispurr": "^4.2.2",
 		"ws": "^8.22.0"
 	},
 	"devDependencies": {
