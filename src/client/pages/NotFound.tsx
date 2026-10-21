@@ -1,4 +1,4 @@
-import { Cooking, route } from '../document-helpers.tsx';
+import { Keywords, route } from '../document-helpers.tsx';
 import {
 	ParticlesScript,
 	PageScripts,
@@ -11,10 +11,10 @@ import Footer from '../components/Footer.tsx';
 export default function NotFound() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="background" class="fullwidth"></div>
-			<Cooking />
+			<Keywords />
 			<div id="mainbody" class="fullwidth">
 				<div class="box-error text-center">
 					<h1>Site Error!</h1>
@@ -44,7 +44,7 @@ export default function NotFound() {
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>
-			<Cooking />
+			<Keywords />
 		</>
 	);
 }

@@ -1,4 +1,4 @@
-import { Cooking, Inline, route, credits } from '../document-helpers.tsx';
+import { Keywords, Inline, route, credits } from '../document-helpers.tsx';
 import {
 	ParticlesScript,
 	PageScripts,
@@ -12,15 +12,15 @@ import Footer from '../components/Footer.tsx';
 export default function Credits() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="header" class="fullwidth">
 				<Header />
 			</div>
 			<div id="background" class="fullwidth"></div>
-			<Cooking />
+			<Keywords />
 			<div id="mainbody" class="box-hero">
-				<Cooking />
+				<Keywords />
 				<div id="credits" class="hero-grid-container">
 					<div class="box-hero">
 						<div class="box-noflex">
@@ -110,7 +110,7 @@ export default function Credits() {
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>
-			<Cooking />
+			<Keywords />
 			<Inline>
 				<script src={route('assets/js/card.js', 'inline')} />
 			</Inline>

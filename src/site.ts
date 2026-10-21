@@ -13,8 +13,8 @@ export interface SiteValues {
 	labels: Record<string, string>;
 	defaultSearch: string;
 	splash: string[];
-	cookingText: string[];
-	cookingFacts: string[];
+	keywordText: string[];
+	keywordFacts: string[];
 	characters: string[];
 	maskedTerms: string[];
 	errors: Record<string, { beforeScript: string; afterScript: string }>;

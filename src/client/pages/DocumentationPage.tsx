@@ -1,4 +1,4 @@
-import { Cooking, Inline, route } from '../document-helpers.tsx';
+import { Keywords, Inline, route, SEO } from '../document-helpers.tsx';
 import {
 	ParticlesScript,
 	PageScripts,
@@ -13,7 +13,7 @@ import Footer from '../components/Footer.tsx';
 export default function DocumentationPage() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="header" class="fullwidth">
 				<Header />
@@ -31,7 +31,7 @@ export default function DocumentationPage() {
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>
-			<Cooking />
+			<Keywords />
 			<Inline>
 				<script src={route('assets/js/card.js', 'inline')} />
 			</Inline>
@@ -79,8 +79,66 @@ export default function DocumentationPage() {
 export function Head() {
 	return (
 		<>
-			<title>InvisiProxy LTS</title>
-			<PageDescription />
+			<title>
+				InvisiProxy Docs | Self-Hosting, Configuration &amp; Tor Setup
+			</title>
+			<SEO>
+				<meta
+					name="robots"
+					content="index, follow, max-image-preview:large"
+				/>
+				<link
+					rel="canonical"
+					href="https://invisiproxy.com/documentation"
+				/>
+				<meta
+					name="description"
+					content="Self-host InvisiProxy: install it with pnpm, set it up in config.json, route traffic through Tor or a SOCKS5 proxy, and see what each dependency does."
+				/>
+				<meta property="og:site_name" content="InvisiProxy LTS" />
+				<meta
+					property="og:url"
+					content="https://invisiproxy.com/documentation"
+				/>
+				<meta
+					property="og:title"
+					content={
+						'InvisiProxy Docs | Self-Hosting, Configuration & Tor Setup'
+					}
+				/>
+				<meta property="og:type" content="website" />
+				<meta
+					property="og:description"
+					content="Run your own InvisiProxy instance. Covers install, config.json, Tor and SOCKS5 routing, and the libraries the project is built on."
+				/>
+			</SEO>
+			<meta property="og:image" content={route('assets/img/hero.webp')} />
+			<meta
+				property="og:image:secure_url"
+				content={route('assets/img/hero.webp')}
+			/>
+			<SEO>
+				<meta property="og:image:alt" content="InvisiProxy logo" />
+				<meta property="og:locale" content="en_US" />
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:site" content="@titaniumnetdev" />
+				<meta name="twitter:creator" content="@titaniumnetdev" />
+				<meta
+					name="twitter:title"
+					content={
+						'InvisiProxy Docs | Self-Hosting, Configuration & Tor Setup'
+					}
+				/>
+				<meta
+					name="twitter:description"
+					content="Run your own InvisiProxy instance. Covers install, config.json, Tor and SOCKS5 routing, and the libraries the project is built on."
+				/>
+				<meta
+					name="twitter:image"
+					content={route('assets/img/hero.webp')}
+				/>
+				<meta name="twitter:image:alt" content="InvisiProxy logo" />
+			</SEO>
 			<HeadContent />
 			<ParticlesScript />
 			<PageScripts />

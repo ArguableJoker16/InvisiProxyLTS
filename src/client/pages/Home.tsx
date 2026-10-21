@@ -1,5 +1,5 @@
 import {
-	Cooking,
+	Keywords,
 	Splash,
 	Inline,
 	route,
@@ -15,7 +15,7 @@ import Footer from '../components/Footer.tsx';
 export default function Home() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<nav id="header" class="fullwidth" aria-label="Main navigation">
 				<Header />
@@ -53,7 +53,7 @@ export default function Home() {
 							Browse Now
 						</a>
 					</div>
-					<Cooking />
+					<Keywords />
 					<section
 						class="mac-window"
 						aria-label="Command Line Instructions"
@@ -117,7 +117,7 @@ export default function Home() {
 						</div>
 					</section>
 				</section>
-				<Cooking />
+				<Keywords />
 				<div id="scrollfix">­</div>
 				<div data-aos="fade-right" class="hero-grid-container">
 					<div class="box-hero">
@@ -226,7 +226,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<Cooking />
+				<Keywords />
 				<div data-aos="fade-right" class="carousel-container">
 					<div class="carousel-wrapper">
 						<div class="carousel">
@@ -313,7 +313,7 @@ export default function Home() {
 						</div>
 					</div>
 				</div>
-				<Cooking />
+				<Keywords />
 				<div class="text-center">
 					<div class="splashstroke">
 						<div>
@@ -358,7 +358,7 @@ export default function Home() {
 						</svg>
 					</div>
 				</div>
-				<Cooking />
+				<Keywords />
 				<div class="grid-container">
 					<div data-aos="fade-right" id="info" class="box-card">
 						<div class="content">
@@ -628,7 +628,7 @@ export default function Home() {
 								</p>
 							</div>
 						</div>
-						<Cooking />
+						<Keywords />
 						<div class="image-container-hero">
 							<h1>Free Unrestricted Browsing</h1>
 							<a
@@ -653,7 +653,7 @@ export default function Home() {
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>
-			<Cooking />
+			<Keywords />
 			<Inline>
 				<script src={route('assets/js/card.js', 'inline')} />
 			</Inline>
@@ -686,7 +686,7 @@ export function Head() {
 					content="InvisiProxy LTS is a cutting-edge web proxy service designed to bypass web filters and blockers. Whether dealing with client-side or network-based censorship, InvisiProxy LTS provides seamless access to blocked sites and secure, private browsing on devices like Chromebooks. Overcome content blockers, Chrome extensions, firewalls, and more with our advanced proxy solution."
 				/>
 				<meta
-					name="keywords"
+					name="Keywordss"
 					content="web proxy, free web proxy, proxy web browser, proxy web, proxy web page, proxy for web, secure proxy, unblock websites, free proxy, bypass censorship, unblock Chromebook, proxy service, online security, private browsing, unblock social media, access blocked content, proxy server, internet freedom, unblock at school, unblock at work"
 				/>
 				<meta property="og:site_name" content="InvisiProxy LTS" />
@@ -770,13 +770,13 @@ export function Head() {
 				<script
 					type="application/ld+json"
 					innerHTML={
-						'\n      {\n        "@context": "https://schema.org",\n        "@type": "Organization",\n        "name": "InvisiProxy LTS",\n        "alternateName": "InvisiProxy",\n        "url": "https://invisiproxy.com",\n        "logo": "https://invisiproxy.com/assets/img/logo_github.png",\n        "sameAs": [\n          "https://github.com/QuiteAFancyEmerald/InvisiProxy"\n        ],\n        "description": "InvisiProxy is an advanced web proxy service designed to bypass network censorship and filters, providing a secure and private browsing experience. It supports a wide range of websites, including YouTube, and receives frequent updates to ensure optimal performance.",\n        "founder": {\n          "@type": "Person",\n          "name": "Quite A Fancy Emerald"\n        },\n        "foundingDate": "2020",\n        "contactPoint": {\n          "@type": "ContactPoint",\n          "contactType": "Customer Support",\n          "email": "8xz62b0ce@mozmail.com",\n          "url": "https://invisiproxy.com/credits"\n        }\n      }\n    '
+						'\n      {\n        "@context": "https://schema.org",\n        "@graph": [\n          {\n            "@type": "WebSite",\n            "@id": "https://invisiproxy.com/#website",\n            "url": "https://invisiproxy.com/",\n            "name": "InvisiProxy LTS",\n            "alternateName": [\n              "InvisiProxy",\n              "InvisiProxy LTS Web Proxy"\n            ],\n            "description": "InvisiProxy LTS is a free, open-source web proxy for bypassing web filters and network censorship, with built-in Tor routing and self-hosting support.",\n            "inLanguage": "en-US",\n            "publisher": {\n              "@id": "https://invisiproxy.com/#organization"\n            }\n          },\n          {\n            "@type": "Organization",\n            "@id": "https://invisiproxy.com/#organization",\n            "name": "InvisiProxy LTS",\n            "alternateName": "InvisiProxy",\n            "url": "https://invisiproxy.com/",\n            "logo": {\n              "@type": "ImageObject",\n              "@id": "https://invisiproxy.com/#logo",\n              "url": "https://invisiproxy.com/assets/img/logo_github.png",\n              "contentUrl": "https://invisiproxy.com/assets/img/logo_github.png",\n              "width": 878,\n              "height": 1262,\n              "caption": "InvisiProxy LTS"\n            },\n            "image": {\n              "@id": "https://invisiproxy.com/#logo"\n            },\n            "description": "InvisiProxy LTS is an open-source web proxy project that helps people bypass web filters and regional censorship while keeping their browsing private.",\n            "email": "8xz62b0ce@mozmail.com",\n            "foundingDate": "2020",\n            "founder": {\n              "@type": "Person",\n              "name": "Quite A Fancy Emerald",\n              "url": "https://github.com/QuiteAFancyEmerald"\n            },\n            "contactPoint": {\n              "@type": "ContactPoint",\n              "contactType": "customer support",\n              "email": "8xz62b0ce@mozmail.com",\n              "url": "https://invisiproxy.com/credits",\n              "availableLanguage": [\n                "English"\n              ]\n            },\n            "sameAs": [\n              "https://github.com/InvisiProxy/InvisiProxyLTS",\n              "https://www.patreon.com/invisiproxy"\n            ]\n          }\n        ]\n      }\n    '
 					}
 				/>
 				<script
 					type="application/ld+json"
 					innerHTML={
-						'\n      {\n        "@context": "https://schema.org",\n        "@type": "FAQPage",\n        "mainEntity": [\n          {\n            "@type": "Question",\n            "name": "What is InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy is a free and secure web proxy service designed to bypass web filters and blockers. It supports numerous sites, emphasizing detailed design, mechanics, and advanced features to provide a seamless browsing experience."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How do I unblock websites at school using InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "To unblock websites at school, use InvisiProxy, a free web proxy service that is frequently updated. If a site gets blocked, use the link generator on another device. Monthly restocks help prevent mass blocking."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What websites can I access with InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy allows access to a wide variety of websites, including popular sites like Discord, Spotify, YouTube, and many game sites."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Is InvisiProxy safe to use?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Absolutely! InvisiProxy ensures a safe browsing experience by not collecting or logging any user data. Refer to our Privacy Policy for more details. Additionally, InvisiProxy is open-source, ensuring full transparency."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Does InvisiProxy hide my search history?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Yes, InvisiProxy hides your search history. You can customize your tab appearance via Settings > Tab Cloak and use Stealth mode for private browsing."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How can I get more InvisiProxy sites?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Use the link button in the top right corner of most InvisiProxy pages."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Is InvisiProxy open-source?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Yes, InvisiProxy is open-source. Visit our GitHub to deploy or host your own instance of InvisiProxy, ensuring maximum privacy control."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How fast and advanced is InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy is a fast and highly advanced web proxy service, featuring CAPTCHA integration, TOR browsing, customizable blacklist settings, leak prevention mechanisms, robust security measures, and extensive site compatibility via Scramjet + Wisp."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Can I self-host InvisiProxy for better privacy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Yes, you can easily fork the InvisiProxy repository and self-host it for maximum privacy control, ensuring no user data is collected."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What makes InvisiProxy different from other web proxy services?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy stands out with its transparency and privacy control, collecting no user data. It leverages custom source randomization and projects like Proxy Transports, Wisp, and Scramjet to effectively bypass web and network filters."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What design principles does InvisiProxy follow?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy uses the Nord Theme for its optimal design color palette, prioritizing readable code syntax and user-friendly UI components."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How do I start using InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Head to the Web Proxies page and select one of the featured proxies. Then, type the site you wish to access in the search box. Each web proxy has its own level of effectiveness, speed, and security. Scramjet is highly recommended for the best experience."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What pre-linked applications does InvisiProxy feature?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy features a collection of pre-linked applications, including YouTube, Spotify, Webretro (an online everything emulator), Ruffle.fs (Adobe Flash Emulator), and an expansive library for each respective app."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How do I deploy InvisiProxy on my own server?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy is designed to be easy to deploy and use on personal setups or production loads. Detailed guides can be found at the official GitHub repository and built-in docs."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Where is the default proxy location when starting InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "The default place for the proxy when started is http://localhost:8080. You can change this setting if needed in config.json. This website is hosted locally with Scramjet built-in."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How can I contribute to InvisiProxy?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy thrives thanks to its contributors. You can get involved in various ways, including design, core development, applications, documentation, and testing and QA. Visit our GitHub repository and join our Discord server to get started."\n            }\n          }\n        ]\n      }\n    '
+						'\n      {\n        "@context": "https://schema.org",\n        "@type": "FAQPage",\n        "@id": "https://invisiproxy.com/#faq",\n        "url": "https://invisiproxy.com/",\n        "name": "InvisiProxy LTS frequently asked questions",\n        "inLanguage": "en-US",\n        "isPartOf": {\n          "@id": "https://invisiproxy.com/#website"\n        },\n        "about": {\n          "@id": "https://invisiproxy.com/#organization"\n        },\n        "mainEntity": [\n          {\n            "@type": "Question",\n            "name": "What is InvisiProxy LTS?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy LTS is a free, open-source web proxy that lets you reach websites blocked by school, workplace, or regional filters. It runs entirely in your browser using Scramjet and Wisp, so there is nothing to install."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How do I start using InvisiProxy LTS?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Open the Browse page, pick one of the featured proxies, and type the address of the site you want to visit into the search box. Scramjet is the recommended option for the best site compatibility and speed."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How do I unblock websites at school or work?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Visit InvisiProxy LTS and browse through the built-in proxy. If the domain you use gets blocked, use the link button on most pages to get a fresh InvisiProxy LTS link from another device."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What websites can I access with InvisiProxy LTS?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Most of the web works, including Discord, Spotify, YouTube, and many browser game sites. The Apps page also links pre-configured apps such as YouTube, Spotify, Webretro (a multi-console emulator), and Ruffle (a Flash emulator)."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Is InvisiProxy LTS safe to use?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Yes. InvisiProxy LTS does not collect or log user data, as described in the Privacy Policy, and its full source code is public on GitHub so anyone can verify how it works."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Does InvisiProxy LTS hide my browsing history?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Sites you open through the proxy do not appear as regular entries in your browser history. You can also disguise the tab title and icon under Settings > Tab Cloak and use Stealth mode for more private browsing."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Can I use Tor with InvisiProxy LTS?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Yes. InvisiProxy LTS can route traffic over the Tor network from inside Chromium-based browsers and Firefox, so you can open .onion sites without installing the Tor Browser. You can also chain traffic through your own SOCKS5 proxy. For the strongest anonymity, the official Tor Browser still offers better fingerprinting protection."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What makes InvisiProxy LTS different from other web proxies?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "InvisiProxy LTS is fully open source, collects no user data, and builds on actively maintained projects like Scramjet, Wisp, and Proxy Transports. It adds source randomization, leak prevention, CAPTCHA support, Tor routing, and configurable blocklists to get past web and network filters."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "Can I self-host InvisiProxy LTS?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Yes. Fork or clone the repository on GitHub and run it on your own server, VPS, or Docker host. Self-hosting gives you full control over privacy and a private link that is less likely to be blocked. Setup guides are in the GitHub repository and the built-in Documentation page."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "What port does a self-hosted InvisiProxy LTS instance use?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "By default a self-hosted instance runs at http://localhost:8080. You can change the port in config.json."\n            }\n          },\n          {\n            "@type": "Question",\n            "name": "How can I contribute to InvisiProxy LTS?",\n            "acceptedAnswer": {\n              "@type": "Answer",\n              "text": "Contributions are welcome in design, core development, apps, documentation, translations, and testing. Start with the GitHub repository and join the Discord community to coordinate with the maintainers."\n            }\n          }\n        ]\n      }\n    '
 					}
 				/>
 			</SEO>

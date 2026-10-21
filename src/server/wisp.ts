@@ -77,7 +77,7 @@ const wispConfig = {
 	trustedHeaders: ['X-Forwarded-For'],
 	nonWSResponse: 'meow',
 	nonWSRedirect: '/pages/404.html',
-	logLevel: 'warn',
+	logLevel: 'none',
 	proxy: '',
 	maxMessageSize: 262144,
 	staticDir: '',

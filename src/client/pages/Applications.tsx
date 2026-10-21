@@ -1,4 +1,4 @@
-import { Cooking, Inline, route, sites } from '../document-helpers.tsx';
+import { Keywords, Inline, route, sites } from '../document-helpers.tsx';
 import {
 	ParticlesScript,
 	TooltipScripts,
@@ -18,13 +18,13 @@ import App from '../components/AppButton.tsx';
 export default function Applications() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="header" class="fullwidth">
 				<Header />
 			</div>
 			<div id="background" class="fullwidth"></div>
-			<Cooking />
+			<Keywords />
 			<div data-aos="fade-right" class="hero-grid-container">
 				<div class="box-hero">
 					<div class="hero-content">
@@ -72,7 +72,7 @@ export default function Applications() {
 					</div>
 				</div>
 			</div>
-			<Cooking />
+			<Keywords />
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>

@@ -21,14 +21,14 @@ export function Splash() {
 export function iconBookmarklet() {
 	return `javascript:alert((Array.from(document.head.querySelectorAll("link[rel*='icon']")).slice(-1)[0]||0).href||location.origin+"${route('/favicon.ico')}")`;
 }
-export function Cooking() {
+export function Keywords() {
 	if (values.usingSEO) return null;
 	return (
 		<span
 			style={{ display: 'none' }}
-			data-fact={randomItem(values.cookingFacts)}
+			data-fact={randomItem(values.keywordFacts)}
 		>
-			{randomItem(values.cookingText)}
+			{randomItem(values.keywordText)}
 		</span>
 	);
 }

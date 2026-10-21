@@ -1,4 +1,4 @@
-import { Cooking, iconBookmarklet } from '../document-helpers.tsx';
+import { Keywords, iconBookmarklet } from '../document-helpers.tsx';
 import {
 	ParticlesScript,
 	PageScripts,
@@ -12,16 +12,16 @@ import Footer from '../components/Footer.tsx';
 export default function Icons() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="header" class="fullwidth">
 				<Header />
 			</div>
 			<div id="background" class="fullwidth"></div>
-			<Cooking />
+			<Keywords />
 			<div id="mainbody" class="fullwidth">
 				<div class="box-clear text-center textm">
-					<Cooking />
+					<Keywords />
 					<h1 class="bigtitle">Icon Information</h1>
 					<h3>How to find the Icon URL of a Site</h3>
 					<p>
@@ -47,7 +47,7 @@ export default function Icons() {
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>
-			<Cooking />
+			<Keywords />
 		</>
 	);
 }

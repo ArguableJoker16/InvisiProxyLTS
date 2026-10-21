@@ -1,4 +1,4 @@
-import { Cooking, Inline, route, values } from '../document-helpers.tsx';
+import { Keywords, Inline, route, values } from '../document-helpers.tsx';
 import {
 	ParticlesScript,
 	TooltipScripts,
@@ -17,13 +17,13 @@ import Footer from '../components/Footer.tsx';
 export default function Scramjet() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="header" class="fullwidth">
 				<Header />
 			</div>
 			<div id="background" class="fullwidth"></div>
-			<Cooking />
+			<Keywords />
 			<div data-aos="fade-right" class="hero-grid-container">
 				<div class="box-hero">
 					<div class="hero-content">
@@ -113,7 +113,7 @@ export default function Scramjet() {
 			<div id="footer" class="fullwidth">
 				<Footer />
 			</div>
-			<Cooking />
+			<Keywords />
 			<Inline>
 				<script src={route('assets/js/card.js', 'inline')} />
 			</Inline>

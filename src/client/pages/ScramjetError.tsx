@@ -1,11 +1,11 @@
-import { Cooking, route } from '../document-helpers.tsx';
+import { Keywords, route } from '../document-helpers.tsx';
 import HeadContent from '../components/HeadContent.tsx';
 import AntiExfil from '../components/AntiExfil.tsx';
 
 export default function ScramjetError() {
 	return (
 		<>
-			<Cooking />
+			<Keywords />
 			<AntiExfil />
 			<div id="cover"></div>
 			<div id="inner" class="container-fluid text-center">
