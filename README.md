@@ -356,7 +356,7 @@ prSet('pr-example', 'example');
 
 ## Future Additions
 
-<a href="https://github.com/InvisiProxy/InvisiProxyLTS/blob/master/TODO.md">This</a> is our nonexhaustive todo list for InvisiProxy LTS v6.x.x and above. Release for production will be v7.x.x and above.
+<a href="https://github.com/InvisiProxy/InvisiProxyLTS/blob/master/TODO.md">This</a> is our nonexhaustive todo list for InvisiProxy LTS.
 
 ## Vague Explanation for Beginners With External Proxies and Hosting
 
@@ -364,7 +364,7 @@ You will first want to host your proxies locally or externally.
 
 #### List of some good hosting options:
 
-- <a href="https://crunchbits.com/">Crunchbits</a> ( Current Hosting Provider)
+- <a href="https://synteq.com/">Synteq</a> ( Current Hosting Provider)
 - <a href="https://greencloudvps.com">Greencloud</a> (Paid)
 - <a href="https://www.oracle.com/cloud">Oracle Cloud</a> (Free, Paid, Dedicated)
 - <a href="https://azure.microsoft.com">Azure</a> (Free and Paid)
@@ -512,4 +512,4 @@ This project currently uses Scramjet and Ultraviolet as web proxies adhering to 
 
 ### Notable Mentions:
 
-- <a href="https://crunchbits.com/">Crunchbits</a> (Hosting Provider)
+- <a href="https://synteq.com/">Synteq</a> (Hosting Provider)
