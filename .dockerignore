@@ -1,4 +1,5 @@
 node_modules
+/dist
 .gitpod.yml
 .vscode
 .gitattributes
@@ -10,3 +11,9 @@ views/dist/*
 src/.shutdown
 views/archive/gfiles/rarch/roms
 .idea
+private/mirror-links.txt
+.git
+.github
+tests
+docker-compose.yml
+views/dist-new

@@ -2,7 +2,6 @@ name: CI-Production
 
 on:
   push:
-    branches: [master]
   pull_request:
     branches: [master]
 
@@ -23,26 +22,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'pnpm'
+          node-version: '24'
 
       - name: Install dependencies
-        run: pnpm run fresh-install
+        run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright libraries
-        run: sudo npx playwright install-deps chromium
+      - name: Install musl runtime (wispurr moments)
+        run: sudo apt-get update && sudo apt-get install -y musl
 
       - name: Build libraries
         run: pnpm run build
 
-      - name: Allow AppArmor sandbox to work on Ubuntu
-        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
-        # A safer option to fix sandboxes if Chrome is installed on a local client:
-        # echo -e "\nexport CHROME_DEVEL_SANDBOX=/opt/google/chrome/chrome-sandbox" >> ~/.bashrc
-
-      - name: Start server
-        run: pnpm run workflow-test
-
-      - name: Test server response
+      - name: Test configuration, privacy and production routes
         run: pnpm test
 
-      - name: Stop server after testing
-        run: pnpm stop
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Test browser interactions
+        run: pnpm run test:browser

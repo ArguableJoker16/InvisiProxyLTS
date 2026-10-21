@@ -17,4 +17,4 @@ corepack prepare pnpm@latest --activate
 
 pnpm install
 
-node --max_old_space_size=2560 ./backend.js
+pnpm start

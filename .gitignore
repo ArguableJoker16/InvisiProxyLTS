@@ -1,4 +1,5 @@
 node_modules
+/dist
 .gitpod.yml
 .vscode
 .gitattributes
@@ -7,6 +8,8 @@ views/archive
 ngrok.exe
 debug.log
 views/dist/*
+views/dist-new/
 src/.shutdown
 views/archive/gfiles/rarch/roms
 .idea
+private/mirror-links.txt

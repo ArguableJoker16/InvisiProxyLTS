@@ -1,12 +1,12 @@
-<img align="center" src="https://raw.githubusercontent.com/QuiteAFancyEmerald/InvisiProxy/master/views/assets/img/github_banner.png"></img>
+<img align="center" src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/github_banner.png"></img>
 
-<img align="left" width="40px" src="https://raw.githubusercontent.com/QuiteAFancyEmerald/InvisiProxy/master/views/assets/img/logo_github.png"></img>
+<img align="left" width="40px" src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/logo_github.png"></img>
 
-# InvisiProxy LTS (v7.x.x)
+# InvisiProxy LTS (v8.x.x)
 #### Formerly Holy Unblocker LTS
 
-![GitHub Actions Status](https://github.com/QuiteAFancyEmerald/InvisiProxy/workflows/CI-Production/badge.svg)
-![GitHub Actions Status](https://github.com/QuiteAFancyEmerald/InvisiProxy/workflows/CI-Win/badge.svg)
+![GitHub Actions Status](https://github.com/InvisiProxy/InvisiProxyLTS/workflows/CI-Production/badge.svg)
+![GitHub Actions Status](https://github.com/InvisiProxy/InvisiProxyLTS/workflows/CI-Win/badge.svg)
 [![Docker Image Version](https://img.shields.io/docker/v/quiteafancyemerald/invisiproxy.svg)](https://hub.docker.com/r/quiteafancyemerald/InvisiProxy)
 [![Docker Pulls](https://img.shields.io/docker/pulls/quiteafancyemerald/invisiproxy.svg)](https://hub.docker.com/r/quiteafancyemerald/InvisiProxy)
 [![Docker Pulls](https://img.shields.io/docker/pulls/quiteafancyemerald/holy-unblocker.svg)](https://hub.docker.com/r/quiteafancyemerald/holy-unblocker)
@@ -15,8 +15,7 @@
 
 ## You can support InvisiProxy by starring the repository!
 
-This project serves mostly as a proof of concept for the ideal clientless solution to bypassing censorship. A good use case of this project would be if you ever needed a clientless solution to use Tor or leave minimal traces of device activity. Simply host this project on any domain and have an alternative solution to a VPN without needing to download anything on said device. Being a secure web proxy service, it supports numerous sites while being updated frequently and concentrating on being easy to self-host. InvisiProxy LTS works with a large number of sites, including YouTube, ChatGPT, Discord, GeForce NOW and more!
-Also has a good amount of exclusive features compared to other web proxies in terms of bypassing web filters and global censorship from countries.
+This project serves mostly as a proof of concept for the ideal clientless solution to bypassing censorship. A good use case of this project would be if you ever needed a method to use Tor, swap regions when browsing (or use an external proxy), browse websites without making accounts (reduces fingerprinting), bypass adblocking, and/or leave minimal traces of device activity. Simply host this project on any domain and have an alternative solution to a VPN without needing to download anything on said device. Being a secure web proxy service, it supports numerous sites while being updated frequently and concentrating on being easy to self-host. InvisiProxy LTS works with a large number of sites, including YouTube, Gemini, ChatGPT, Discord, GeForce NOW and more! This project also features good amount of exclusive features compared to other web proxies in terms of bypassing web filters (DOM Masquerading and Source Randomization) and global censorship from countries. Current countries supported are China (GFW) and Russia.
 
 #### Over 30M+ users since 2020. Thank you so much for the support I could have never imagined how massive the web proxy community has become.
 
@@ -31,7 +30,9 @@ Also has a good amount of exclusive features compared to other web proxies in te
 
 #### Considering switching branches for self-hosting to a production branch!
 
-View the <a href="#deploy-InvisiProxy">self-deployment options</a> if you wish to self host this project. Can't deploy using any of the free options? Check out Railway or look into cheap, paid VPS hosting solutions. If you don't wish to self-host join the discord for more official instance links that are restocked frequently.
+View the <a href="#deploy-InvisiProxy">self-deployment options</a> if you wish to self host this project. Can't deploy using any of the free options? Check out Koyeb or look into cheap, paid VPS hosting solutions. If you don't wish to self-host please click on the Mirror Links Menu on InvisiProxy.
+
+<img align="left" width="20px" src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/mirrors.png"></img>
 
 **Be sure to join TitaniumNetwork's Discord for more official site links:** <a href="https://discord.gg/unblock">https://discord.gg/unblock</a>
 
@@ -55,29 +56,29 @@ View the <a href="#deploy-InvisiProxy">self-deployment options</a> if you wish t
 | Spotify                    | Bypass regional proxy blocks by swapping regions or enabling Tor                                                                      |
 | And essentially most sites!| Built for intensive production loads and ease of setup                                                                               |
 
-<img src="https://raw.githubusercontent.com/QuiteAFancyEmerald/InvisiProxy/master/views/assets/img/preview/invisi-v7.0.2-preview.png"> </img>
-<img src="https://raw.githubusercontent.com/QuiteAFancyEmerald/InvisiProxy/master/views/assets/img/preview/invisi-v6.9.7-preview-settings.png"></img>
+<img src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/preview/invisi-v8.1.0-preview.png"> </img>
+<img src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/preview/invisi-v8.1.0-preview-settings.png"></img>
 
 ## Deploy InvisiProxy
 
 ### Free Deployments
 
-[![Deploy to Koyeb](https://binbashbanana.github.io/deploy-buttons/buttons/remade/koyeb.svg)](https://app.koyeb.com/deploy?name=InvisiProxy&type=git&repository=QuiteAFancyEmerald%2FInvisiProxy&branch=production&builder=dockerfile&ports=8080%3Bhttp%3B%2F)
+[![Deploy to Koyeb](https://binbashbanana.github.io/deploy-buttons/buttons/remade/koyeb.svg)](https://app.koyeb.com/deploy?name=InvisiProxyLTS&type=git&repository=InvisiProxy%2FInvisiProxyLTS&branch=production&builder=dockerfile&ports=8080%3Bhttp%3B%2F)
 [![Deploy to Oracle Cloud](https://binbashbanana.github.io/deploy-buttons/buttons/remade/oraclecloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/BinBashBanana/deploy-buttons/archive/refs/heads/main.zip)
 
 <details><summary>Alternative Free Sources</summary>
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/QuiteAFancyEmerald/InvisiProxy)
-[![Deploy to Fly.io](https://img.shields.io/badge/Deploy%20to-Fly.io-blue?logo=fly.io)](https://fly.io/launch?repo=https://github.com/QuiteAFancyEmerald/InvisiProxy)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/InvisiProxy/InvisiProxyLTS)
+[![Deploy to Fly.io](https://img.shields.io/badge/Deploy%20to-Fly.io-blue?logo=fly.io)](https://fly.io/launch?repo=https://github.com/InvisiProxy/InvisiProxyLTS)
 
 </details>
 
 ### Production Paid/Free Options (Requires Payment Info)
 
-[![Deploy to Azure](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/azure.svg)](https://deploy.azure.com/?repository=https://github.com/QuiteAFancyEmerald/InvisiProxy)
-[![Deploy to IBM Cloud](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/ibmcloud.svg)](https://cloud.ibm.com/devops/setup/deploy?repository=https://github.com/QuiteAFancyEmerald/InvisiProxy)
-[![Deploy to Amplify Console](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/amplifyconsole.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/QuiteAFancyEmerald/InvisiProxy)
-[![Run on Google Cloud](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/googlecloud.svg)](https://deploy.cloud.run/?git_repo=https://github.com/QuiteAFancyEmerald/InvisiProxy)
+[![Deploy to Azure](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/azure.svg)](https://deploy.azure.com/?repository=https://github.com/InvisiProxy/InvisiProxyLTS)
+[![Deploy to IBM Cloud](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/ibmcloud.svg)](https://cloud.ibm.com/devops/setup/deploy?repository=https://github.com/InvisiProxy/InvisiProxyLTS)
+[![Deploy to Amplify Console](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/amplifyconsole.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/InvisiProxy/InvisiProxyLTS)
+[![Run on Google Cloud](https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/googlecloud.svg)](https://deploy.cloud.run/?git_repo=https://github.com/InvisiProxy/InvisiProxyLTS)
 
 #### What happened to Replit/Heroku Deployment?
 
@@ -100,6 +101,7 @@ Replit is no longer free and Heroku has a set policy against web proxies. Try Gi
 ### Partners
 - <a href="https://gitlab.com/fp-production/fp">The Freedom Project (Hard Fork)</a>
 - <a href="https://github.com/aukak/truffled">Truffled (Partner)</a>
+- <a href="https://github.com/titaniumnetwork-dev/Obsidian">Obsidian (Partner)</a>
 
 ## Table of contents:
 
@@ -138,14 +140,18 @@ Either use the button above to deploy to the deployment options above or type th
 Please ensure you are using `Node 20.x` as well. `git` and `curl` are required dependencies:
 
 ```bash
-git clone https://github.com/QuiteAFancyEmerald/InvisiProxy.git
+git clone https://github.com/InvisiProxy/InvisiProxyLTS.git
 
-cd InvisiProxy
+cd InvisiProxyLTS
 
 # Edit config.js and set production to true if you want to use pm2 (Allows for easier VPS hosting)
-pnpm run fresh-install
-pnpm run fetch-adblock
+pnpm install
+pnpm fetch-adblock
+pnpm build
 pnpm start
+
+# pm2 daemon utilization
+pm2 start ecosystem.config.cjs
 
 # Or on subsequent uses...
 pnpm restart
@@ -160,7 +166,7 @@ pnpm run build
 pnpm run test
 ```
 
-This website is hosted locally with [Scramjet](https://github.com/MercuryWorkshop/Scramjet), [Ultraviolet](https://github.com/TitaniumNetwork-Dev/Ultraviolet), [Wisp](https://github.com/MercuryWorkshop/Wisp-Protocol), [Bare-Mux](https://github.com/MercuryWorkshop/Bare-Mux), [EpoxyTransport](https://github.com/MercuryWorkshop/Epoxy-Transport), and [LibcurlTransport](https://github.com/MercuryWorkshop/Libcurl-Transport) built-in.
+This website is hosted locally with [Scramjet](https://github.com/MercuryWorkshop/Scramjet), [Wisp](https://github.com/MercuryWorkshop/Wisp-Protocol), [Merp Obfuscation](https://github.com/sylvieisnton/merp), [EpoxyTransport](https://github.com/MercuryWorkshop/Epoxy-Transport), and [LibcurlTransport](https://github.com/MercuryWorkshop/Libcurl-Transport) built-in.
 
 ### For security reasons when hosting with a reverse proxy PLEASE use NGINX not Caddy. This is due to wispurr using loopbacks. If using Caddy disable this feature or adjust your default Caddy config.
 
@@ -175,16 +181,16 @@ For simplicity sake you can join the TN discord at discord.gg/unblock and reques
 If you wish to self-host however you will first need a VPS or hosting provider: 
 
 - https://docs.titaniumnetwork.org/guides/vps-hosting/
-- https://github.com/QuiteAFancyEmerald/InvisiProxy#deploy-InvisiProxy
+- https://github.com/InvisiProxy/InvisiProxyLTS#deploy-InvisiProxy
 - https://docs.titaniumnetwork.org/guides/dns-setup/
 
 ### Dependencies
 
-You will then need to setup git, nginx (or caddy) and Node.js. Here is an example for Ubuntu LTS:
+You will then need to setup git, musl, nginx (or caddy) and Node.js. Here is an example for Ubuntu LTS:
 ```
 sudo apt update
 sudo apt upgrade
-sudo apt install curl git nginx
+sudo apt install curl git nginx musl
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
@@ -199,19 +205,19 @@ https://github.com/nvm-sh/nvm
 https://docs.titaniumnetwork.org/guides/nginx/
 
 ### Tor Support (Optional)
-https://github.com/QuiteAFancyEmerald/InvisiProxy#toronionsocks5-routing-setup
+https://github.com/InvisiProxy/InvisiProxyLTS#toronionsocks5-routing-setup
 
 ### Configurating InvisiProxy
 Most important options are production along with the obfuscation and DOM masquerading techniques. 
 
-From there just configure as needed: https://github.com/QuiteAFancyEmerald/InvisiProxy#configuration
+From there just configure as needed: https://github.com/InvisiProxy/InvisiProxyLTS#configuration
 
 ### Cloning and Running InvisiProxy
 
 Then run the respective process; if you have production set to true in the configuration pm2 will be automatically enabled with our own workers/cache system. 
 
 ```
-git clone https://github.com/QuiteAFancyEmerald/InvisiProxy.git
+git clone https://github.com/InvisiProxy/InvisiProxyLTS.git
 cd InvisiProxy
 
 pnpm run fresh-start
@@ -248,6 +254,7 @@ Every other localized changes for source randomization, auto-minify, etc. are lo
 - `disguiseFiles`: Enable DOM masquerading which obfuscates real the real content fetches for InvisiLTS. This is done through disguising requests, decompressing and then reconstructing the DOM tree.
 - `usingSEO`: Enable Source Randomization which randomizes the source by swapping chunks of data specified in `./src/data.json`. Highly useful for masking keywords that will automatically flag or block InvisiProxy LTS as well as preventing source blocks.
 - `verbose`: Enables compiling and building messages to see progress and possible issues while compiling.
+- `mirrorLinksFile`: Server-only file used by the Links page dispenser, defaulting to `private/mirror-links.txt`. Relative paths are resolved from the project root; absolute paths are also supported. Use one HTTP(S) URL per line and keep the file outside `views/` so it is not publicly served. Restart the server after changing this setting.
 #### Tor/Onion/SOCKS5 Routing Setup
 
 You need to setup Tor (no GUI need/GUI is alright. With GUI replace port 9050 with 9150) in order for the Onion Routing setting to work!
@@ -258,14 +265,14 @@ Alternative Guide (for CLI): https://community.torproject.org/onion-services/set
 
 If you are hosting InvisiProxy LTS on a VPS utilizing Ubuntu consider attaching Tor to systemctl for easier production management. Once Tor is up and running on either Linux or Windows it will work automatically with InvisiProxy LTS when enabled by the user via the Settings menu.
 
-If you wish to use a custom HTTP/HTTPS/SOCKS5 proxy to route all traffic through for Scramjet and Ultraviolet this is handled in `./views/assets/js/register-sw.js.` Modify `proxyUrl` with the respective protocol and address. This is done via the proxy option for Wisp. You can change the cases as needed.
+If you wish to use a custom HTTP/HTTPS/SOCKS5 proxy to route traffic for Scramjet this is handled on the server in `./src/server/wisp.ts`.
 
-```js
-  proxyUrl = {
-    tor: 'socks5h://localhost:9050',
-    eu: 'socks5h://localhost:7000',
-    jp: 'socks5h://localhost:7001',
-  }
+```ts
+export const wispProxies = {
+  tor: 'socks5h://127.0.0.1:9050',
+  eu: 'socks5h://127.0.0.1:7000',
+  jp: 'socks5h://127.0.0.1:7001',
+}
 ```
 
 #### Proxy Configuration
@@ -349,7 +356,7 @@ prSet('pr-example', 'example');
 
 ## Future Additions
 
-<a href="https://github.com/QuiteAFancyEmerald/InvisiProxy/blob/master/TODO.md">This</a> is our nonexhaustive todo list for InvisiProxy LTS v6.x.x and above. Release for production will be v7.x.x and above.
+<a href="https://github.com/InvisiProxy/InvisiProxyLTS/blob/master/TODO.md">This</a> is our nonexhaustive todo list for InvisiProxy LTS.
 
 ## Vague Explanation for Beginners With External Proxies and Hosting
 
@@ -357,7 +364,7 @@ You will first want to host your proxies locally or externally.
 
 #### List of some good hosting options:
 
-- <a href="https://crunchbits.com/">Crunchbits</a> ( Current Hosting Provider)
+- <a href="https://synteq.com/">Synteq</a> ( Current Hosting Provider)
 - <a href="https://greencloudvps.com">Greencloud</a> (Paid)
 - <a href="https://www.oracle.com/cloud">Oracle Cloud</a> (Free, Paid, Dedicated)
 - <a href="https://azure.microsoft.com">Azure</a> (Free and Paid)
@@ -399,7 +406,7 @@ Preferably if you have your own device use Visual Studio Code. Pretty much the b
 Not going to go too in depth with this part but first fork this repository. The clone it locally through a Terminal of some sort depending on what OS you are on. Make sure you navigate to the folder you want to set this up in.
 
 ```
-git clone https://github.com/QuiteAFancyEmerald/InvisiProxy.git
+git clone https://github.com/InvisiProxy/InvisiProxyLTS.git
 
 cd InvisiProxy
 
@@ -436,7 +443,7 @@ Use the same steps above by running `pnpm install` in your repository and adding
 
 #### Where can I find the games for this repo? (404 errors, etc.)
 
-Please read over <a href="https://github.com/QuiteAFancyEmerald/InvisiProxy/blob/master/views/GAMES.md">here</a>.
+Please read over <a href="https://github.com/InvisiProxy/InvisiProxyLTS/blob/master/views/GAMES.md">here</a>.
 
 **Why is the site I am on not working correctly or having CAPTCHA errors?**
 
@@ -486,28 +493,23 @@ This project currently uses Scramjet and Ultraviolet as web proxies adhering to 
 
 - <a href="https://github.com/sylvieisnton/wispurr">wispurr</a>
 - <a href="https://github.com/MercuryWorkshop/scramjet">Scramjet</a>
-- <a href="https://github.com/titaniumnetwork-dev/Ultraviolet">Ultraviolet</a>
 - <a href="https://github.com/MercuryWorkshop/wisp-protocol">Wisp Protocol</a>
 - <a href="https://github.com/MercuryWorkshop/Epoxy-Transport">EpoxyTransport</a>
 - <a href="https://github.com/MercuryWorkshop/Libcurl-Transport">libcurl-transport</a>
-- <a href="https://github.com/MercuryWorkshop/bare-mux">Bare-Mux</a>
-- <a href="https://gist.github.com/BinBashBanana/a1fd7345e2d86e69d5a532f16cbdbdaa">DetectorDetector</a>
+- <a href="https://github.com/sylvieisnton/merp">Merp (Obfuscation Module)</a>
 - <a href="https://gitlab.com/fp-production/fp">The Freedom Project (Hard Fork)</a>
 
 ### Other Dependencies:
 
+- <a href="https://github.com/solidjs/solid">SolidJS</a>
+- <a href="https://github.com/vitejs/vite">vite</a>
 - <a href="https://github.com/tsparticles/tsparticles">tsparticles</a>
-- <a href="https://github.com/fastify/fastify">fastify</a>
-- <a href="https://github.com/fastify/fastify-helmet">@fastify/helmet</a>
-- <a href="https://github.com/fastify/fastify-static">@fastify/static</a>
 - <a href="https://github.com/DerpmanDev/modal">Modal</a>
-- <a href="https://github.com/BinBashBanana/webretro">webretro</a>
 - <a href="https://github.com/hagezi/dns-blocklists">hagezi DNS Blocklists</a>
-- <a href="https://ruffle.rs/">Ruffle</a>
 - <a href="https://github.com/michalsnik/aos">AOS</a>
 - <a href="https://github.com/nordtheme">Nord Theme</a>
 - <a href="https://fontawesome.com/">Font Awesome</a>
 
 ### Notable Mentions:
 
-- <a href="https://crunchbits.com/">Crunchbits</a> (Hosting Provider)
+- <a href="https://synteq.com/">Synteq</a> (Hosting Provider)

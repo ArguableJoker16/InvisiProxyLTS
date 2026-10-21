@@ -1,3 +1,5 @@
+import { values, route, maskText } from 'build:invisiproxy';
+import { isMobileBrowser, selectedTransport } from '../../../src/browser/transport.ts';
 /* -----------------------------------------------
 /* Authors: Yoct, OlyB, b4kt
 /* GNU Affero General Public License v3.0: https://www.gnu.org/licenses/agpl-3.0.en.html
@@ -13,7 +15,7 @@ date.setFullYear(date.getFullYear() + 100);
 date = date.toUTCString();
 
 // Cookies will not be used unless necessary. The localStorage API will be used instead.
-const storageId = '{{hu-lts}}-storage',
+const storageId = `${values.storageNamespace}-storage`,
   storageObject = () => JSON.parse(localStorage.getItem(storageId)) || {},
   setStorage = (name, value) => {
     let mainStorage = storageObject();
@@ -129,19 +131,16 @@ const storageId = '{{hu-lts}}-storage',
   // The icon URLs and tab titles may need to be updated over time.
   presetIcons = Object.freeze({
     '': ' \n ',
-    '{{Google}}': 'Google \n https://www.google.com/favicon.ico',
-    '{{Bing}}':
+    [values.labels["Google"]]: 'Google \n https://www.google.com/favicon.ico',
+    [values.labels["Bing"]]:
       'Bing \n https://www.bing.com/sa/simg/favicon-trans-bg-blue-mg-28.ico',
-    '{{Google}} Drive':
+    [`${values.labels["Google"]} Drive`]:
       'Home - Google Drive \n https://ssl.gstatic.com/images/branding/product/2x/drive_2020q4_48dp.png',
     Gmail:
       'Inbox - Gmail \n https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
   }),
   defaultTheme = 'dark',
-  // Choose the default transport mode, for proxying, based on the browser.
-  // Firefox is not supported by epoxy yet, which is why this is implemented.
-  defaultMode = '{{epoxy}}',
-  defaultSearch = '{{defaultSearch}}';
+  defaultSearch = values.defaultSearch;
 
 // All code in this block is used by menu items that adjust website settings.
 
@@ -152,11 +151,9 @@ if (document.getElementById('csel')) {
       (
         document.getElementById(selector) || document.querySelector(selector)
       ).addEventListener(...args),
-    focusElement = document
-      .getElementsByClassName('dropdown-settings')[0]
-      .parentElement.querySelector("a[href='#']");
+    settingsMenu = document.getElementsByClassName('dropdown-settings')[0],
+    focusElement = settingsMenu.parentElement.querySelector("button.link-button");
 
-  // TODO: Add functionality to adapt listeners for the Wisp Transport List.
   // TODO: Properly comment this code.
   const attachClassEventListener = (classSelector, ...args) => {
     const eventTrigger = args[0],
@@ -195,7 +192,7 @@ if (document.getElementById('csel')) {
       // Allow users to reset the title to default if nothing is entered.
       focusElement.focus();
       removeStorage('Title');
-      pageTitle('{{mask}}{{InvisiProxy LTS}}');
+      pageTitle(maskText("InvisiProxy LTS"));
     }
   });
 
@@ -211,7 +208,7 @@ if (document.getElementById('csel')) {
       //    Allow users to reset the favicon to default if nothing is entered.
       focusElement.focus();
       removeStorage('Icon');
-      pageIcon('{{route}}{{assets/ico/favicon.ico}}');
+      pageIcon(route("assets/ico/favicon.ico"));
     }
   });
 
@@ -230,13 +227,17 @@ if (document.getElementById('csel')) {
   });
   */
 
-  // Provides users with a handy set of title and icon autofill options.
+  // Apply the selected preset's title and icon immediately.
   attachEventListener('icon-list', 'change', (e) => {
     let titleform = document.getElementById('titleform'),
       iconform = document.getElementById('iconform');
     [titleform.firstElementChild.value, iconform.firstElementChild.value] = (
       presetIcons[e.target.value] || ' \n '
     ).split(' \n ');
+    if (e.target.value && presetIcons[e.target.value]) {
+      titleform.requestSubmit();
+      iconform.requestSubmit();
+    }
   });
 
   attachClassEventListener('search-engine-list', 'change', (e) => {
@@ -245,36 +246,11 @@ if (document.getElementById('csel')) {
       : setStorage('SearchEngine', e.target.value);
   });
 
-  // Allow users to change the Wisp transport mode, for proxying, with the UI.
-  attachClassEventListener('{{wisp-transport}}-list', 'change', (e) => {
-    if (e.target.checked) {
-      let wispTransportList = e.target.closest('.{{wisp-transport}}-list');
-      !wispTransportList.querySelector('input:checked') ||
-      e.target.value === defaultMode
-        ? removeStorage('Transport')
-        : setStorage('Transport', e.target.value);
-
-      // Only the libcurl transport mode supports TOR at the moment.
-      let torCheck = document.getElementsByClassName('useonion');
-      if (
-        e.target.value !== 'libcurl' &&
-        checkBooleanState(torCheck[0]) === true
-      )
-        classUpdateHandler(torCheck, 'off', classEvent(torCheck, 'change'))();
-    }
-
-    if (e.isTrusted) location.reload();
-  });
-
   attachClassEventListener('theme-list', 'change', (e) => {
-    if (e.target.checked) {
-      let themeList = e.target.closest('.theme-list');
-      if (
-        !themeList.querySelector('input:checked') ||
-        e.target.value === defaultTheme
-      ) {
-        const theme = readStorage('Theme');
-        if (theme) document.documentElement.classList.toggle(theme, false);
+    if (e.target.tagName === 'SELECT' || e.target.checked) {
+      const theme = readStorage('Theme');
+      if (theme) document.documentElement.classList.toggle(theme, false);
+      if (e.target.value === defaultTheme) {
         removeStorage('Theme');
       } else {
         setStorage('Theme', e.target.value);
@@ -378,9 +354,28 @@ if (document.getElementById('csel')) {
     }
   });
 
-  attachEventListener('.close-settings-btn', 'click', () => {
-    focusElement.blur();
-    document.activeElement.blur();
+  document.querySelectorAll('.settings-toggle').forEach((button) => {
+    button.addEventListener('click', () => focusElement.focus());
+  });
+
+  const closeSettings = () => {
+    if (settingsMenu.parentElement.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+  };
+
+  attachEventListener('.close-settings-btn', 'click', closeSettings);
+
+  settingsMenu.addEventListener('click', (event) => {
+    if (!event.target.closest('.settings-content')) {
+      closeSettings();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeSettings();
+    }
   });
 
   // Allow users to toggle ads with the UI.
@@ -394,32 +389,17 @@ if (document.getElementById('csel')) {
     }
   });
 
-  /* Allow users to toggle onion routing in Ultraviolet with the UI. Only
-   * the libcurl transport mode supports TOR at the moment, so ensure that
-   * users are aware that they cannot use TOR with other modes.
-   */
   attachClassEventListener('useonion', 'change', (e) => {
-    let unselectedModes = document.querySelectorAll(
-      '.{{wisp-transport}}-list input:not([value={{libcurl}}]),.region-list'
-    );
-    const wispTransportList = document.getElementsByClassName(
-        '{{wisp-transport}}-list'
-      ),
-      regionList = document.getElementsByClassName('region-list');
+    const regionList = document.getElementsByClassName('region-list');
     if (checkBooleanState(e.target) === true) {
-      classUpdateHandler(
-        wispTransportList,
-        '{{libcurl}}',
-        classEvent(wispTransportList, 'change')
-      )();
       classUpdateHandler(regionList, 'off', classEvent(regionList, 'change'))();
-      unselectedModes.forEach((e) => {
+      Array.from(regionList).forEach((e) => {
         e.setAttribute('disabled', 'true');
       });
       setStorage('UseSocks5', 'tor');
       classUpdateHandler(document.getElementsByClassName('useonion'), 'on')();
     } else {
-      unselectedModes.forEach((e) => {
+      Array.from(regionList).forEach((e) => {
         e.removeAttribute('disabled');
       });
 
@@ -467,7 +447,7 @@ if (document.getElementById('csel')) {
   });
 
   attachClassEventListener('history-toggle', 'change', (e) => {
-    const value = e.target.value;
+    const value = e.target.checked ? 'hidehistory' : 'none';
 
     value === 'none'
       ? (setStorage('HistoryHide', 'none'), removeCookie('HistoryHide'))
@@ -482,7 +462,7 @@ if (document.getElementById('csel')) {
 
     if (enabled) {
       setStorage('ErudaEnabled', true);
-      const moduleLocation = '{{route}}{{eruda/eruda.js}}';
+      const moduleLocation = route('eruda/eruda.js');
 
       import(moduleLocation).then((module) => {
         if (!self.eruda || !self.eruda.init) return;
@@ -499,6 +479,14 @@ if (document.getElementById('csel')) {
 /* END WEBSITE SETTINGS */
 
 /* LOAD USER-SAVED SETTINGS */
+
+const browsingPreferences = document.getElementById('settings-panel');
+if (browsingPreferences) {
+  browsingPreferences.open = readStorage('BrowsingPreferencesOpen') === true;
+  browsingPreferences.addEventListener('toggle', () => {
+    setStorage('BrowsingPreferencesOpen', browsingPreferences.open);
+  });
+}
 
 // Load a custom page title and favicon if it was previously stored.
 useStorageArgs('Title', (s) => {
@@ -518,19 +506,36 @@ useStorageArgs('Theme', (s) => {
 });
 
 useStorageArgs('SearchEngine', (s) => {
+  if (s && !Object.entries(values.labels).some(([name, label]) => name !== 'libcurl' && label === s)) {
+    removeStorage('SearchEngine');
+    s = undefined;
+  }
   classUpdateHandler(
     document.getElementsByClassName('search-engine-list'),
     s || defaultSearch
   )();
 });
 
-// Load the Wisp transport mode that was last used, or use the default.
-useStorageArgs('Transport', (s) => {
-  classUpdateHandler(
-    document.getElementsByClassName('{{wisp-transport}}-list'),
-    s || defaultMode
-  )();
-});
+const mobileBrowser = isMobileBrowser(),
+  transportName = selectedTransport(readStorage('Transport'), mobileBrowser);
+if (mobileBrowser || transportName === 'epoxy') setStorage('Transport', transportName);
+else if (readStorage('Transport') !== undefined) removeStorage('Transport');
+for (const transportSelector of document.getElementsByClassName('transport-list')) {
+  transportSelector.value = transportName;
+  transportSelector.closest('.transport-setting').hidden = mobileBrowser;
+  transportSelector.addEventListener('change', () => {
+    setStorage('Transport', transportSelector.value);
+    location.reload();
+  });
+}
+for (const regionSelector of document.getElementsByClassName('region-list')) {
+  regionSelector.disabled = transportName === 'epoxy';
+  regionSelector.title = transportName === 'epoxy' ? 'Region routing requires libcurl.' : '';
+}
+for (const torToggle of document.getElementsByClassName('useonion')) {
+  torToggle.disabled = transportName === 'epoxy';
+  torToggle.title = transportName === 'epoxy' ? 'Tor routing requires libcurl.' : '';
+}
 
 // Ads are disabled by default. Load ads if ads were enabled previously.
 // Change !== to === here if ads should be enabled by default.
@@ -553,7 +558,7 @@ useStorageArgs('UseSocks5', (s) => {
 useStorageArgs('HistoryHide', (s) => {
   classUpdateHandler(
     document.getElementsByClassName('history-toggle'),
-    s || 'hidehistory'
+    s === 'hidehistory' || !s
   )();
 
   if (s === 'hidehistory' || !s) {

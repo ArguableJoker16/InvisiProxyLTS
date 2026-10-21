@@ -1,0 +1,88 @@
+:is(#documentation, #credits) {
+	font-family: "Lato", sans-serif;
+}
+
+:is(#documentation, #credits) > .box-hero,
+:is(#documentation, #credits) .box-noflex {
+	min-width: 0;
+	width: 100%;
+}
+
+.documentation-table {
+	width: 100%;
+	margin: 24px 0;
+	border: 1px solid color-mix(in srgb, var(--nord4) 20%, transparent);
+	border-spacing: 0;
+	border-radius: 12px;
+	overflow: hidden;
+	background-color: var(--nord0);
+	text-align: left;
+	text-wrap: pretty;
+	line-height: 1.6;
+}
+
+.documentation-table th,
+.documentation-table td {
+	padding: 16px clamp(12px, 2vw, 24px);
+	text-align: left;
+	vertical-align: top;
+}
+
+.documentation-table th {
+	background-color: var(--nord0m1);
+	font-weight: 700;
+}
+
+.documentation-table th:first-child {
+	width: 30%;
+}
+
+.documentation-table tbody td {
+	border-top: 1px solid color-mix(in srgb, var(--nord4) 12%, transparent);
+}
+
+.documentation-table tbody tr:nth-child(even) {
+	background-color: color-mix(in srgb, var(--nord4) 4%, var(--nord0));
+}
+
+.faq-center {
+	text-align: center;
+	font-size: 28px;
+}
+
+.faq-search {
+	outline: none;
+	background-color: var(--dark2);
+	border: 2px solid var(--nord4);
+	color: white;
+	padding: 6px 8px;
+	font-size: 16px;
+	margin: 20px auto 10px auto;
+	display: block;
+	max-width: 50%;
+}
+
+.faq-search::placeholder {
+	color: var(--gray);
+}
+
+.faq-text {
+	margin-bottom: 30px;
+}
+
+.faq-text *:not(h4, strong) {
+	color: var(--nord4);
+}
+
+.fb-l {
+	background-color: var(--nord1);
+}
+
+.faq-box .faq-search {
+	background-color: var(--dark2);
+}
+
+#credits .documentation-table {
+	table-layout: fixed;
+	overflow-wrap: anywhere;
+}

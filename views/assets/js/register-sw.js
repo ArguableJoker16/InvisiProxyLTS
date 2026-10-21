@@ -1,50 +1,37 @@
+import { values, route } from 'build:invisiproxy';
+import { selectedTransport } from '../../../src/browser/transport.ts';
 (() => {
-  const swRoutes = {
-      sj: ['{{route}}{{/sw.js}}', '{{route}}{{/sw-blacklist.js}}'],
-      uv: ['{{route}}{{/uv/sw.js}}', '{{route}}{{/uv/sw-blacklist.js}}'],
-    },
-    swScope = '{{route}}{{/}}',
-    uvSwScope = '{{route}}{{/uv/}}',
+  const swScope = route("/"),
     swAllowedHostnames = ['localhost', '127.0.0.1'],
-    wispUrl =
-      (location.protocol === 'https:' ? 'wss' : 'ws') +
-      '://' +
-      location.host +
-      '{{route}}{{/wisp/}}',
-    proxyUrl = {
-      tor: 'socks5h://localhost:9050',
-      eu: 'socks5h://localhost:7000',
-      jp: 'socks5h://localhost:7001',
-    },
-    transports = {
-      '{{epoxy}}': '{{route}}{{/epoxy/index.mjs}}',
-      '{{libcurl}}': '{{route}}{{/libcurl/index.mjs}}',
-    },
-    storageId = '{{hu-lts}}-storage',
+    // Regional/Tor proxies are configured server-side (src/server/wisp.ts).
+    // The client only selects the matching Wisp endpoint.
+    regions = ['tor', 'eu', 'jp', 'patreon'],
+    wispUrl = (region) =>
+      `${(location.protocol === 'https:' ? 'wss' : 'ws')}://${location.host}${route("/wisp/")}${region ? region + '/' : ''}`,
+    storageId = `${values.storageNamespace}-storage`,
     storageObject = () => JSON.parse(localStorage.getItem(storageId)) || {},
-    readStorage = (name) => storageObject()[name],
-    defaultMode = '{{epoxy}}';
+    readStorage = (name) => storageObject()[name];
 
-  transports.default = transports[defaultMode];
-  Object.freeze(transports);
+  const transportName = selectedTransport(readStorage('Transport')),
+    transportUrl = route(`/${transportName}/index.mjs`);
 
-  const getTransportSelection = () => {
-    const url = transports[readStorage('Transport')] || transports.default;
-    const options = { wisp: wispUrl };
-    if ('string' === typeof readStorage('UseSocks5'))
-      options.proxy = proxyUrl[readStorage('UseSocks5')];
-    return { url, options };
+  const getTransportOptions = () => {
+    const selected = readStorage('UseSocks5');
+    return {
+      wisp: wispUrl(
+        transportName === 'libcurl' && regions.includes(selected) ? selected : ''
+      ),
+    };
   };
 
-  const swVariant = () => (readStorage('HideAds') !== false ? 1 : 0);
+  const getSWRoute = () =>
+    route(readStorage('HideAds') !== false ? '/sw-blacklist.js' : '/sw.js');
 
   const unregisterStaleSWs = async () => {
-    const expected = [swRoutes.sj[swVariant()], swRoutes.uv[swVariant()]].map(
-      (sw) => new URL(sw, location.origin).pathname
-    );
+    const expected = new URL(getSWRoute(), location.origin).pathname;
     for (const registration of await navigator.serviceWorker.getRegistrations()) {
       const active = registration.active;
-      if (active && !expected.includes(new URL(active.scriptURL).pathname))
+      if (active && new URL(active.scriptURL).pathname !== expected)
         await registration.unregister();
     }
   };
@@ -61,7 +48,7 @@
 
     await unregisterStaleSWs();
 
-    const sw = swRoutes.sj[swVariant()];
+    const sw = getSWRoute();
     console.log('Registering Scramjet service worker:', sw);
     const registration = await navigator.serviceWorker.register(sw, {
       scope: swScope,
@@ -70,7 +57,9 @@
     await navigator.serviceWorker.ready;
     if (!navigator.serviceWorker.controller) {
       await new Promise((resolve) => {
+        let timer;
         const onChange = () => {
+          clearTimeout(timer);
           navigator.serviceWorker.removeEventListener(
             'controllerchange',
             onChange
@@ -82,19 +71,20 @@
           onChange,
           { once: true }
         );
-        setTimeout(resolve, 5000);
+        timer = setTimeout(onChange, 5000);
+        if (navigator.serviceWorker.controller) onChange();
       });
     }
 
     return registration;
   };
 
-  const buildScramjetTransport = async () => {
-    const { url, options } = getTransportSelection();
-    const mod = await import(url);
+  /** @returns {Promise<import("@mercuryworkshop/proxy-transports").ProxyTransport>} */
+  const buildScramjetTransport = async (options) => {
+    const mod = await import(transportUrl);
     const TransportClient = mod.default;
     const transport = new TransportClient(options);
-    if (typeof transport.init === 'function') await transport.init();
+    await transport.init();
     return transport;
   };
 
@@ -113,7 +103,7 @@
     plugins.push(
       new $scramjetUtils.CatchEscapedLinksPlugin((url) => {
         try {
-          localStorage.setItem('{{hu-lts}}-frame-url', 'sj:' + url.href);
+          localStorage.setItem(`${values.storageNamespace}-frame-url`, 'sj:' + url.href);
         } catch (e) {}
         return new URL(location.pathname + location.search, location.origin);
       })
@@ -139,29 +129,14 @@
         return;
       }
 
-      const { url: transportUrl, options: transportOptions } =
-        getTransportSelection();
-      console.log('Using proxy:', transportOptions.proxy);
+      const transportOptions = getTransportOptions();
+      console.log('Using wisp:', transportOptions.wisp);
       console.log('Transport mode:', transportUrl);
 
-      if (typeof BareMux !== 'undefined')
-        try {
-          const baremux = new BareMux.BareMuxConnection(
-            '{{route}}{{/baremux/worker.js}}'
-          );
-          await baremux.setTransport(transportUrl, [transportOptions]);
-          await navigator.serviceWorker.register(swRoutes.uv[swVariant()], {
-            scope: uvSwScope,
-          });
-          console.log('Ultraviolet service worker registered');
-        } catch (err) {
-          console.warn(
-            'BareMux setup failed',
-            err
-          );
-        }
-
-      const registration = await registerScramjetSW();
+      const [registration, transport] = await Promise.all([
+        registerScramjetSW(),
+        buildScramjetTransport(transportOptions),
+      ]);
 
       const serviceworker =
         navigator.serviceWorker.controller ?? registration.active;
@@ -170,15 +145,14 @@
 
       const { Controller } = $scramjetController;
       const { defaultConfig } = $scramjet;
-      const transport = await buildScramjetTransport();
       const controller = new Controller({
         serviceworker,
         transport,
         config: {
-          prefix: '{{route}}{{/scram/network/}}',
-          scramjetPath: '{{route}}{{/scram/scramjet.js}}',
-          wasmPath: '{{route}}{{/scram/scramjet.wasm}}',
-          injectPath: '{{route}}{{/scram/controller.inject.js}}',
+          prefix: route("/scram/network/"),
+          scramjetPath: route("/scram/scramjet.js"),
+          wasmPath: route("/scram/scramjet.wasm"),
+          injectPath: route("/scram/controller.inject.js"),
         },
         scramjetConfig: {
           ...defaultConfig,
@@ -190,20 +164,20 @@
         },
       });
 
-      await Promise.race([
-        controller.wait(),
-        new Promise((_, reject) =>
-          setTimeout(
-            () =>
-              reject(
-                new Error(
-                  'Scramjet controller handshake timed out'
-                )
-              ),
-            15000
-          )
-        ),
-      ]);
+      let handshakeTimer;
+      try {
+        await Promise.race([
+          controller.wait(),
+          new Promise((_, reject) => {
+            handshakeTimer = setTimeout(
+              () => reject(new Error('Scramjet controller handshake timed out')),
+              15000
+            );
+          }),
+        ]);
+      } finally {
+        clearTimeout(handshakeTimer);
+      }
       console.log('Scramjet controller initialized');
 
       const visibleFrame = document.getElementById('frame');
@@ -234,5 +208,13 @@
     }
   };
 
-  initialize();
+  if (window.$invisiScramjetInitializing) {
+    window.$invisiScramjetInitializing.then(() => {
+      if (window.$invisiScramjet?.ready) initialize();
+    });
+  } else {
+    window.$invisiScramjetInitializing = initialize().finally(() => {
+      delete window.$invisiScramjetInitializing;
+    });
+  }
 })();

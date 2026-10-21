@@ -1,8 +1,7 @@
 minimumReleaseAge: 1440
 
-updateConfig:
-  ignoreDependencies:
-    - '@titaniumnetwork-dev/ultraviolet'
+minimumReleaseAgeExclude:
+  - merp-obfuscator
 
 allowBuilds:
   '@mercuryworkshop/scramjet': true
