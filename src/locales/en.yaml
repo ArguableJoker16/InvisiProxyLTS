@@ -1,6 +1,6 @@
 # Adding a language:
-#   1. Copy this file to src/locales/<code>.yaml, using the code browsers send
-#      in Accept-Language (fr.yaml, ja.yaml, pt-br.yaml, ...).
+#   1. Copy this file to src/locales/<code>.yaml, named like Crowdin names it
+#      (fr.yaml, ja.yaml, zh-Hans.yaml, pt_BR.yaml, ...).
 #   2. Set language.name to the language's own name (Français, 日本語, ...).
 #      It appears in the Language dropdown in Settings automatically.
 #   3. Translate the text. Keep {placeholders} and <tags> as they are and only
@@ -11,6 +11,7 @@ language:
   name: English
 
   # Country codes (ISO 3166-1, as sent by Cloudflare's CF-IPCountry header)
+  # https://www.iso.org/obp/ui/#search ; "Country codes"
   countries: []
   
   # Replace words here with respective translations to avoid them being blocked by filters. 

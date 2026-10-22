@@ -1,4 +1,5 @@
 import { values } from '../site.ts';
+import LocaleLinks from './components/LocaleLinks.tsx';
 import type { PageDefinition } from './types';
 
 export default function Document(props: PageDefinition) {
@@ -8,6 +9,9 @@ export default function Document(props: PageDefinition) {
 		<html lang={values.locale}>
 			<head>
 				<Head />
+				{props.indexed && (
+					<LocaleLinks route={[props.route ?? ''].flat()[0]} />
+				)}
 			</head>
 			<body id="top" style={props.bodyStyle}>
 				<Page />

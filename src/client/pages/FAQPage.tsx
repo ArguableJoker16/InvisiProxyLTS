@@ -55,19 +55,11 @@ export function Head() {
 					name="robots"
 					content="index, follow, max-image-preview:large"
 				/>
-				<link
-					rel="canonical"
-					href="https://invisiproxy.com/questions"
-				/>
 				<meta
 					name="description"
 					content={translate('faq.meta.description')}
 				/>
 				<meta property="og:site_name" content="InvisiProxy LTS" />
-				<meta
-					property="og:url"
-					content="https://invisiproxy.com/questions"
-				/>
 				<meta
 					property="og:title"
 					content={translate('faq.meta.title')}
@@ -88,7 +80,6 @@ export function Head() {
 					property="og:image:alt"
 					content={translate('common.logoAlt')}
 				/>
-				<meta property="og:locale" content="en_US" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@titaniumnetdev" />
 				<meta name="twitter:creator" content="@titaniumnetdev" />
