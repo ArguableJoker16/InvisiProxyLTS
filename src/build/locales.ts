@@ -37,11 +37,10 @@ const stringList = (value: unknown, file: string, field: string) => {
 	return value as string[];
 };
 
+const localeCode = (name: string) => name.toLowerCase().replace(/_/g, '-');
+
 export function readLocale(file: string): Locale {
-	const code = file
-		.replace(/\.ya?ml$/, '')
-		.toLowerCase()
-		.replace(/_/g, '-');
+	const code = localeCode(file.replace(/\.ya?ml$/, ''));
 	const { language = {}, ...messages } =
 		parse(readFileSync(join(localesDir, file), 'utf8')) || {};
 	if (typeof language.name !== 'string')
@@ -76,7 +75,7 @@ export function builtLocales(
 	settings: { singleLanguage?: boolean; language?: string } = config
 ): Locale[] {
 	if (!settings.singleLanguage) return locales;
-	const code = (settings.language || defaultLocale).toLowerCase();
+	const code = localeCode(settings.language || defaultLocale);
 	const locale = locales.find((other) => other.code === code);
 	if (!locale)
 		throw new Error(

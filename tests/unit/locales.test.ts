@@ -86,7 +86,7 @@ test('singleLanguage builds only the chosen language', () => {
 		maskedTerms: [],
 		messages: {},
 	});
-	const locales = [locale('en'), locale('fr')];
+	const locales = [locale('en'), locale('fr'), locale('pt-br')];
 	assert.deepEqual(builtLocales(locales, { singleLanguage: false }), locales);
 	assert.deepEqual(builtLocales(locales, { singleLanguage: true }), [
 		locales[0],
@@ -94,6 +94,10 @@ test('singleLanguage builds only the chosen language', () => {
 	assert.deepEqual(
 		builtLocales(locales, { singleLanguage: true, language: 'FR' }),
 		[locales[1]]
+	);
+	assert.deepEqual(
+		builtLocales(locales, { singleLanguage: true, language: 'pt_BR' }),
+		[locales[2]]
 	);
 	assert.throws(
 		() => builtLocales(locales, { singleLanguage: true, language: 'de' }),
