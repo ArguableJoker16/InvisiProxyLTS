@@ -51,6 +51,34 @@ export function acceptedLanguages(header: string | undefined) {
 		.map(({ tag }) => tag);
 }
 
+const codeLocales = new Map<string, Intl.Locale | undefined>();
+
+function likelySubtags(tag: string) {
+	try {
+		return new Intl.Locale(tag).maximize();
+	} catch {
+		return;
+	}
+}
+
+function closestCode(tag: string, codes: string[]) {
+	const wanted = likelySubtags(tag);
+	if (!wanted) return;
+	let closest: string | undefined;
+	for (const code of codes) {
+		if (!codeLocales.has(code)) codeLocales.set(code, likelySubtags(code));
+		const locale = codeLocales.get(code);
+		if (
+			locale?.language !== wanted.language ||
+			locale.script !== wanted.script
+		)
+			continue;
+		if (locale.region === wanted.region) return code;
+		closest ??= code;
+	}
+	return closest;
+}
+
 // Picks a language in this order: the Language cookie set from Settings, the
 // browser's Accept-Language header, the visitor's country (Cloudflare's
 // CF-IPCountry header, only with geoLanguage on), then the default.
@@ -65,8 +93,8 @@ export function pickLanguage(
 
 	for (const tag of acceptedLanguages(req.headers['accept-language'])) {
 		if (codes.includes(tag)) return tag;
-		const base = tag.split('-')[0];
-		if (codes.includes(base)) return base;
+		const closest = closestCode(tag, codes);
+		if (closest) return closest;
 	}
 
 	const country = req.headers['cf-ipcountry'];

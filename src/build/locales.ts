@@ -38,7 +38,10 @@ const stringList = (value: unknown, file: string, field: string) => {
 };
 
 export function readLocale(file: string): Locale {
-	const code = file.replace(/\.ya?ml$/, '').toLowerCase();
+	const code = file
+		.replace(/\.ya?ml$/, '')
+		.toLowerCase()
+		.replace(/_/g, '-');
 	const { language = {}, ...messages } =
 		parse(readFileSync(join(localesDir, file), 'utf8')) || {};
 	if (typeof language.name !== 'string')
