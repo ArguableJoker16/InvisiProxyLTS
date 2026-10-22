@@ -18,7 +18,31 @@ export interface SiteValues {
 	characters: string[];
 	maskedTerms: string[];
 	errors: Record<string, { beforeScript: string; afterScript: string }>;
+	locale: string;
+	locales: { code: string; name: string }[];
+	messages?: Messages;
+	fallbackMessages?: Messages;
 	readAsset?: (path: string) => string | undefined;
+}
+
+export type Messages = { [key: string]: string | Messages };
+export type MessageParams = Record<string, string | number>;
+
+function lookup(messages: Messages | undefined, key: string) {
+	let node: string | Messages | undefined = messages;
+	for (const part of key.split('.'))
+		node = typeof node === 'object' ? node[part] : undefined;
+	return typeof node === 'string' ? node : undefined;
+}
+
+export function translate(key: string, params: MessageParams = {}): string {
+	const message =
+		lookup(values.messages, key) ?? lookup(values.fallbackMessages, key);
+	if (message === undefined)
+		throw new Error(`Missing translation for "${key}"`);
+	return message.replace(/\{(\w+)\}/g, (match, name: string) =>
+		Object.hasOwn(params, name) ? String(params[name]) : match
+	);
 }
 
 export let values: SiteValues;
@@ -43,9 +67,9 @@ export function route(path: string, conditional?: 'inline'): string {
 			ancestor
 				? values.aliases[name] || name
 				: values.aliases[`files/${name}`] ||
-				values.cacheBust[name] ||
-				values.aliases[name] ||
-				name
+					values.cacheBust[name] ||
+					values.aliases[name] ||
+					name
 		)
 		.replace(
 			/[^/]+(?=\/)/g,
@@ -115,8 +139,16 @@ export const sites = Object.freeze([
 ]);
 
 export const partners = Object.freeze([
-	{ name: 'Titanium Network', url: 'https://titaniumnetwork.org', newtab: false },
-	{ name: 'The Freedom Project', url: 'https://nullatenus.com', newtab: true },
+	{
+		name: 'Titanium Network',
+		url: 'https://titaniumnetwork.org',
+		newtab: false,
+	},
+	{
+		name: 'The Freedom Project',
+		url: 'https://nullatenus.com',
+		newtab: true,
+	},
 	{ name: 'Truffled', url: 'https://truffled.lol', newtab: false },
 	{ name: 'Obsidian', url: 'https://playobsidian.com', newtab: false },
 ]);
@@ -129,13 +161,13 @@ interface CreditPerson {
 }
 
 interface CreditSection {
-	title: string;
+	id: string;
 	people: CreditPerson[];
 }
 
 export const credits = Object.freeze<CreditSection[]>([
 	{
-		title: 'Main Developers',
+		id: 'developers',
 		people: [
 			{
 				name: 'Quite A Fancy Emerald',
@@ -157,14 +189,15 @@ export const credits = Object.freeze<CreditSection[]>([
 			},
 			{
 				name: 'Sylvia',
-				contributions: 'Co-Owner, Main Contributor, SolidJS Rewrite, English to French',
+				contributions:
+					'Co-Owner, Main Contributor, SolidJS Rewrite, English to French',
 				url: 'https://sylvieon.dev',
 				contact: '@sylvieisnton',
 			},
 		],
 	},
 	{
-		title: 'Contributors',
+		id: 'contributors',
 		people: [
 			{
 				name: 'MUATEX',
@@ -211,7 +244,7 @@ export const credits = Object.freeze<CreditSection[]>([
 		],
 	},
 	{
-		title: 'Translators',
+		id: 'translators',
 		people: [
 			{
 				name: 'Manjit',
@@ -227,7 +260,7 @@ export const credits = Object.freeze<CreditSection[]>([
 		],
 	},
 	{
-		title: 'Shoutouts',
+		id: 'shoutouts',
 		people: [
 			{
 				name: 'Divide',
@@ -320,7 +353,7 @@ export const credits = Object.freeze<CreditSection[]>([
 				name: 'Synaptic',
 				contributions: 'Synaptic',
 				contact: 'Synaptic',
-			}
+			},
 		],
 	},
 ]);

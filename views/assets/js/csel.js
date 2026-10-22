@@ -446,6 +446,16 @@ if (document.getElementById('csel')) {
     if (e.isTrusted) location.reload();
   });
 
+  attachClassEventListener('language-list', 'change', (e) => {
+    const value = e.target.value;
+
+    value === 'auto'
+      ? (removeStorage('Language'), removeCookie('Language'))
+      : (setStorage('Language', value), setCookie('Language', value));
+
+    if (e.isTrusted) location.reload();
+  });
+
   attachClassEventListener('history-toggle', 'change', (e) => {
     const value = e.target.checked ? 'hidehistory' : 'none';
 
@@ -503,6 +513,12 @@ useStorageArgs('Theme', (s) => {
     s || defaultTheme,
     classEvent(themeList, 'change')
   )();
+});
+
+useStorageArgs('Language', (s) => {
+  // Restore the cookie if it was cleared so the next page uses the same language.
+  if (s) setCookie('Language', s);
+  classUpdateHandler(document.getElementsByClassName('language-list'), s || 'auto')();
 });
 
 useStorageArgs('SearchEngine', (s) => {

@@ -48,7 +48,6 @@ export const pageDefinitions = {
 		route: ['', 'links'],
 		Page: Home,
 		Head: HomeHead,
-		lang: 'en',
 	},
 	'docs.html': {
 		route: 'documentation',

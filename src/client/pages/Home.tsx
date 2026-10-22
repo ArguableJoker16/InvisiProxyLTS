@@ -5,12 +5,57 @@ import {
 	route,
 	values,
 	SEO,
+	translate,
+	Translation,
 } from '../document-helpers.tsx';
 import { ParticlesScript, PageScripts } from '../components/HeadScripts.tsx';
 import HeadContent from '../components/HeadContent.tsx';
 import AntiExfil from '../components/AntiExfil.tsx';
 import Header from '../components/Header.tsx';
 import Footer from '../components/Footer.tsx';
+
+// Links and markup used inside the translated text, e.g. <github>...</github>.
+const links = {
+	browse: (text: string) => <a href={route('/browsing')}>{text}</a>,
+	docs: (text: string) => (
+		<a
+			href={route('/documentation')}
+			title={translate('home.hosting.docsTitle')}
+		>
+			{text}
+		</a>
+	),
+	github: (text: string) => (
+		<a
+			href={route('/github')}
+			title={translate('home.githubTitle')}
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{text}
+		</a>
+	),
+	nord: (text: string) => (
+		<a
+			href="https://nordtheme.com"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{text}
+		</a>
+	),
+	patreon: (text: string) => (
+		<a
+			href={route('/patreon')}
+			aria-label={translate('home.overview.patreonLabel')}
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{text}
+		</a>
+	),
+	underline: () => <span class="underline-svg"></span>,
+};
 
 export default function Home() {
 	return (
@@ -35,22 +80,14 @@ export default function Home() {
 				>
 					<div class="home-text">
 						<h1>
-							<span>End Internet Censorship.</span>
+							<span>{translate('home.headline')}</span>
 						</h1>
-						<h1>Privacy right at your fingertips.</h1>
-						<a
-							class="homebutton"
-							href={route('/browsing')}
-							aria-label="Bypass now"
-						>
-							Browse Now
+						<h1>{translate('home.tagline')}</h1>
+						<a class="homebutton" href={route('/browsing')}>
+							{translate('home.browseNow')}
 						</a>
-						<a
-							class="homebutton mobile"
-							href="#scrollfix"
-							aria-label="Browse now"
-						>
-							Browse Now
+						<a class="homebutton mobile" href="#scrollfix">
+							{translate('home.browseNow')}
 						</a>
 					</div>
 					<Keywords />
@@ -81,19 +118,22 @@ export default function Home() {
 								</span>
 								<br />
 								<span class="comment">
-									For first-time setup on a production
-									branch...
+									{translate('home.terminal.setup')}
 								</span>
 								<br />
 								<span class="cmd">
 									{'pnpm run fresh-start\r'}
 								</span>
 								<br />
-								<span class="comment">Or typical uses...</span>
+								<span class="comment">
+									{translate('home.terminal.start')}
+								</span>
 								<br />
 								<span class="cmd">{'pnpm start\r'}</span>
 								<br />
-								<span class="comment">For development...</span>
+								<span class="comment">
+									{translate('home.terminal.dev')}
+								</span>
 								<br />
 								<span class="cmd">{'pnpm dev\r'}</span>
 								<br />
@@ -126,78 +166,27 @@ export default function Home() {
 								<div class="brand-logo-container">
 									<i class="far fa-window-restore palered"></i>
 									<h2 class="hero-content-header">
-										InvisiProxy is free.
+										{translate('home.free.title')}
 									</h2>
 								</div>
 								<p>
-									Being open source, you can easily fork this
-									repository and self host for maximum privacy
-									control. In contrast to numerous other web
-									proxy services, InvisiProxy stands out with
-									end-to-end encryption via TLS, browser
-									history isolation, Tor/Onion routing in
-									Chromium browsers, complete transparency,
-									and privacy control.{' '}
-									<strong>
-										Unlike other proxy services we collect
-										no user data on our official instances.
-										Not even for debugging purposes.
-									</strong>
-									<br></br>Our open-source dependecies (Wisp,
-									Libcurl and Epoxy) are designed to be secure
-									and privacy-focused, ensuring that your
-									browsing experience remains confidential
-									even with malicious self-hosted instances.
+									<Translation id="home.free.body" />
 								</p>
 								<div class="brand-logo-container">
 									<i class="far fa-window-restore palered"></i>
 									<h2 class="hero-content-header">
-										InvisiProxy is fast and highly advanced.
+										{translate('home.fast.title')}
 									</h2>
 								</div>
-								<p>
-									InvisiProxy delivers exceptional web proxy
-									performance. It boasts a robust feature set
-									including reCAPTCHA/Botguard support, Tor
-									networking, SOCKS5 proxychaining,
-									customizable blacklist settings, leak
-									prevention, hidden history settings, and
-									extensive site compatibility support via
-									Scramjet + Wisp (Paired with Libcurl
-									Transport). Other popular services like
-									CroxyProxy or Proxium often only do half the
-									job of rewriting assets leaking requests
-									while being a privacy concern. This project
-									also supports features like proxychaining,
-									which allows you to route your traffic
-									through multiple proxies for added security
-									and anonymity.
-								</p>
+								<p>{translate('home.fast.body')}</p>
 								<div class="brand-logo-container">
 									<i class="far fa-window-restore palered"></i>
 									<h2 class="hero-content-header">
-										InvisiProxy is practical.
+										{translate('home.practical.title')}
 									</h2>
 								</div>
 								<p>
-									Leveraging our source randomization and
-									projects like Proxy Transports, Wisp, and
-									Scramjet, this project delivers a seamless
-									experience that circumvents web, government
-									and network filters. This project works
-									against filters used in China (GFW - Great
-									Firewall of China), Russia and more{' '}
-									<strong>
-										without the need of downloading software
-									</strong>
-									. This is achieved entirely within your
-									browser as a website and our backend (or
-									your own if self-hosting), enabling users to
-									bypass even the most invasive censorship
-									blocks. No need to download anything simply
-									type in the domain for InvisiProxy, head to
-									the official InvisiProxy site to obtain
-									mirrors if blocked and browse anonymously.
+									<Translation id="home.practical.body" />
 								</p>
 							</div>
 						</div>
@@ -205,15 +194,15 @@ export default function Home() {
 							<img
 								class="hero"
 								src={route('/assets/img/logo-light.webp')}
-								alt="InvisiProxy Logo Hero"
+								alt={translate('home.logoAlt')}
 							/>
 							<h1>InvisiProxy LTS</h1>
-							<h2>Free and transparent for use</h2>
+							<h2>{translate('home.heroSubtitle')}</h2>
 							<a
 								class="fancybutton glowbutton"
 								href={route('/browsing')}
 							>
-								Browse Now
+								{translate('home.browseNow')}
 							</a>
 							<a
 								class="fancybutton glowbutton"
@@ -221,7 +210,7 @@ export default function Home() {
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Donate
+								{translate('home.donate')}
 							</a>
 						</div>
 					</div>
@@ -318,9 +307,10 @@ export default function Home() {
 					<div class="splashstroke">
 						<div>
 							<h1 class="splashstrokeheader">
-								{'\n              Designed with privacy'}
-								<span class="underline-svg"></span>
-								{'.\n            '}
+								<Translation
+									id="home.designedWithPrivacy"
+									tags={links}
+								/>
 							</h1>
 						</div>
 						<svg
@@ -363,34 +353,13 @@ export default function Home() {
 					<div data-aos="fade-right" id="info" class="box-card">
 						<div class="content">
 							<div class="text-wrap">
-								<h1>Overview</h1>
+								<h1>{translate('home.overview.title')}</h1>
+								<p>{translate('home.overview.body')}</p>
 								<p>
-									InvisiProxy LTS, an experimental web proxy
-									service, can bypass web filters or
-									'blockers' regardless of whether the method
-									of censorship is client-side or
-									network-based. This includes the ability to
-									bypass content blockers overseas put in
-									place by governments (China/GFW, Russia,
-									etc.), chrome extensions, localized client
-									firewalls, and network-related filters.
-								</p>
-								<p>
-									Please consider donating to this project so
-									we can keep things free! We offer more
-									domains per month, beta access, personal
-									domains and priority feature requests.{' '}
-									<br />
-									{'\n                You can donate '}
-									<a
-										href={route('/patreon')}
-										aria-label="Donate on Patreon"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										on Patreon here
-									</a>
-									{'.\n              '}
+									<Translation
+										id="home.overview.donate"
+										tags={links}
+									/>
 								</p>
 							</div>
 						</div>
@@ -398,37 +367,20 @@ export default function Home() {
 							<img
 								class="hero"
 								src={route('/assets/img/server.webp')}
-								alt="Server Icon"
+								alt={translate('home.overview.imageAlt')}
 							/>
 						</div>
 					</div>
 					<div data-aos="fade-left" class="box-card">
 						<div class="content">
 							<div class="text-wrap">
-								<h1>Intent</h1>
+								<h1>{translate('home.intent.title')}</h1>
+								<p>{translate('home.intent.body')}</p>
 								<p>
-									This project serves mostly as a proof of
-									concept for the ideal clientless solution to
-									bypassing censorship. Being a secure web
-									proxy service, it supports numerous sites
-									while being updated frequently and
-									concentrating on detail with design,
-									mechanics, and features.
-								</p>
-								<p>
-									{
-										"\n                This project's palette is built using\n                "
-									}
-									<a
-										href="https://nordtheme.com"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										Nord Theme
-									</a>
-									{
-										' for its optimal\n                design color palette and prioritization of readable code syntax\n                and UI components.\n              '
-									}
+									<Translation
+										id="home.intent.palette"
+										tags={links}
+									/>
 								</p>
 							</div>
 						</div>
@@ -436,28 +388,19 @@ export default function Home() {
 							<img
 								class="hero"
 								src={route('/assets/img/filecode.webp')}
-								alt="File Code Icon"
+								alt={translate('home.intent.imageAlt')}
 							/>
 						</div>
 					</div>
 					<div data-aos="fade-right" class="box-card">
 						<div class="content">
 							<div class="text-wrap">
-								<h1>Usage</h1>
+								<h1>{translate('home.usage.title')}</h1>
 								<p>
-									{
-										'\n                Head to the\n                '
-									}
-									<a href={route('/browsing')}>Browse</a> page
-									and select one of the proxies featured!
-									Afterwards, type out the site you wish to
-									access in the search box. Each web proxy has
-									its own level of effectiveness, speed and
-									security. It is recommended to use Scramjet.
-									<br />
-									<br />
-									Example Website To Unblock:{' '}
-									<code>https://youtube.com</code>
+									<Translation
+										id="home.usage.body"
+										tags={links}
+									/>
 								</p>
 							</div>
 						</div>
@@ -465,60 +408,34 @@ export default function Home() {
 							<img
 								class="hero"
 								src={route('/assets/img/shield.webp')}
-								alt="Shield Icon"
+								alt={translate('home.usage.imageAlt')}
 							/>
 						</div>
 					</div>
 					<div data-aos="fade-left" class="box-card">
 						<div class="content">
 							<div class="text-wrap">
-								<h1>Apps</h1>
-								<p>
-									InvisiProxy features a collection of
-									pre-linked applications, including YouTube,
-									Spotify, GeForce NOW, Discord, ChatGPT,
-									Gemini and more!
-								</p>
+								<h1>{translate('home.apps.title')}</h1>
+								<p>{translate('home.apps.body')}</p>
 							</div>
 						</div>
 						<div class="image-container">
 							<img
 								class="hero"
 								src={route('/assets/img/apps.webp')}
-								alt="Application Icon"
+								alt={translate('home.apps.imageAlt')}
 							/>
 						</div>
 					</div>
 					<div data-aos="fade-right" class="box-card">
 						<div class="content">
 							<div class="text-wrap">
-								<h1>Hosting and Deployment</h1>
+								<h1>{translate('home.hosting.title')}</h1>
 								<p>
-									<strong>InvisiProxy LTS</strong> is an
-									open-source solution designed with
-									modularity, ease of use, and easy deployment
-									in mind. Key features include ad-blocking,
-									flexible source code generation, and
-									advanced proxy navigation.
-									<br />
-									<br /> For comprehensive setup instructions,
-									visit our official{' '}
-									<a
-										href={route('/github')}
-										title="InvisiProxy LTS GitHub Repository"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										GitHub repository
-									</a>
-									{' or the '}
-									<a
-										href={route('/documentation')}
-										title="Additional Hosting Information"
-									>
-										built-in documentation provided here
-									</a>
-									{'.\n              '}
+									<Translation
+										id="home.hosting.body"
+										tags={links}
+									/>
 								</p>
 							</div>
 						</div>
@@ -526,36 +443,23 @@ export default function Home() {
 							<img
 								class="hero"
 								src={route('/assets/img/hosting.webp')}
-								alt="Hosting and Deployment Icon"
-								title="Hosting and Deployment for InvisiProxy LTS"
+								alt={translate('home.hosting.imageAlt')}
+								title={translate('home.hosting.imageTitle')}
 							/>
 						</div>
 					</div>
 					<div data-aos="fade-left" class="box-card">
 						<div class="content">
 							<div class="text-wrap">
-								<h1>Contributing</h1>
+								<h1>{translate('home.contributing.title')}</h1>
 								<p>
-									<strong>InvisiProxy LTS</strong> thrives due
-									to the dedicated efforts of our amazing
-									contributors. As an open-source project,{' '}
-									<strong>InvisiProxy LTS</strong> relies on
-									the passion of its community to bypass
-									internet censorship and help users improve
-									access to information.
+									<Translation id="home.contributing.body" />
 								</p>
 								<p>
-									{
-										'\n                To start contributing, visit our\n                '
-									}
-									<a
-										href={route('/github')}
-										title="InvisiProxy LTS GitHub Repository"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										GitHub repository.
-									</a>
+									<Translation
+										id="home.contributing.start"
+										tags={links}
+									/>
 								</p>
 							</div>
 						</div>
@@ -563,8 +467,10 @@ export default function Home() {
 							<img
 								class="hero"
 								src={route('/assets/img/git.webp')}
-								alt="Contributing GitHub Icon"
-								title="Contribute to InvisiProxy LTS on GitHub"
+								alt={translate('home.contributing.imageAlt')}
+								title={translate(
+									'home.contributing.imageTitle'
+								)}
 							/>
 						</div>
 					</div>
@@ -576,77 +482,51 @@ export default function Home() {
 								<div class="brand-logo-container">
 									<i class="far fa-window-restore palered"></i>
 									<h2 class="hero-content-header">
-										Bypass Censorship and Filters
+										{translate('home.bypass.title')}
 									</h2>
 								</div>
 								<p>
-									InvisiProxy LTS is an open-source{' '}
-									<strong>web proxy project</strong>. Enjoy
-									unrestricted access to online content and
-									browsing with our advanced{' '}
-									<strong>web proxy unblocking</strong>{' '}
-									features. This project also grants you the
-									ability to self-host anywhere and bypass
-									nation-wide/regional blocks like China
-									(Great Firewall of China - GFW) and Russia.
+									<Translation id="home.bypass.body" />
 								</p>
 								<div class="brand-logo-container">
 									<i class="far fa-window-restore palered"></i>
 									<h2 class="hero-content-header">
-										100% Free Web Proxy
+										{translate('home.freeProxy.title')}
 									</h2>
 								</div>
 								<p>
-									Benefit from our{' '}
-									<strong>free web proxy service</strong>
-									{' that helps\n                you '}
-									<strong>unblock websites</strong> and access
-									restricted content. Perfect for bypassing
-									educational and/or workplace filters this
-									project is made to unblock it all.
+									<Translation id="home.freeProxy.body" />
 								</p>
 								<div class="brand-logo-container">
 									<i class="far fa-window-restore palered"></i>
 									<h2 class="hero-content-header">
-										Utilize Tor Routing Within Chromium
-										Browsers &amp; Firefox
+										{translate('home.tor.title')}
 									</h2>
 								</div>
 								<p>
-									Using InvisiProxy LTS, you can{' '}
-									<strong>access the Tor network</strong>{' '}
-									directly within your
-									Chromium-based/Firefox-based browser. This
-									means you can access <strong>.onion</strong>{' '}
-									sites directly within this website. This
-									allows you to browse the web anonymously (at
-									least to some extent; real Tor has better
-									fingerprinting mitigations), bypassing any
-									regional restrictions. This project also
-									supports setting custom SOCKS5 proxies to
-									proxychain.
+									<Translation id="home.tor.body" />
 								</p>
 							</div>
 						</div>
 						<Keywords />
 						<div class="image-container-hero">
-							<h1>Free Unrestricted Browsing</h1>
+							<h1>{translate('home.unrestricted')}</h1>
 							<a
 								class="fancybutton glowbutton"
 								href={route('/browsing')}
 							>
-								Bypass Now
+								{translate('home.bypassNow')}
 							</a>
 						</div>
 					</div>
 				</div>
 				<div class="box-home text-center splashend">
-					<h1>It's time to browse the internet freely.</h1>
+					<h1>{translate('home.closing')}</h1>
 					<a class="homebutton" href="#scrollfix">
-						Try InvisiProxy For Free
+						{translate('home.tryFree')}
 					</a>
 					<a class="homebutton mobile" href={route('/browsing')}>
-						Try InvisiProxy For Free
+						{translate('home.tryFree')}
 					</a>
 				</div>
 			</div>
@@ -676,14 +556,11 @@ export function Head() {
 				<meta name="application-name" content="InvisiProxy LTS" />
 				<link rel="canonical" href="https://invisiproxy.com/" />
 			</SEO>
-			<title>
-				InvisiProxy LTS | Free Web Proxy - Bypass Filters &amp; Access
-				Blocked Sites
-			</title>
+			<title>{translate('home.title')}</title>
 			<SEO>
 				<meta
 					name="description"
-					content="InvisiProxy LTS is a cutting-edge web proxy service designed to bypass web filters and blockers. Whether dealing with client-side or network-based censorship, InvisiProxy LTS provides seamless access to blocked sites and secure, private browsing on devices like Chromebooks. Overcome content blockers, Chrome extensions, firewalls, and more with our advanced proxy solution."
+					content={translate('home.description')}
 				/>
 				<meta
 					name="Keywordss"
@@ -691,16 +568,11 @@ export function Head() {
 				/>
 				<meta property="og:site_name" content="InvisiProxy LTS" />
 				<meta property="og:url" content="https://invisiproxy.com/" />
-				<meta
-					property="og:title"
-					content={
-						'InvisiProxy LTS | Free Web Proxy - Bypass Filters & Access Blocked Sites'
-					}
-				/>
+				<meta property="og:title" content={translate('home.title')} />
 				<meta property="og:type" content="website" />
 				<meta
 					property="og:description"
-					content="InvisiProxy LTS is a top-tier web proxy service that bypasses network and browser restrictions to access blocked websites securely. Enjoy a seamless browsing experience with robust security and advanced features."
+					content={translate('home.ogDescription')}
 				/>
 			</SEO>
 			<meta property="og:image" content={route('assets/img/hero.webp')} />
@@ -714,15 +586,10 @@ export function Head() {
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@titaniumnetdev" />
 				<meta name="twitter:creator" content="@titaniumnetdev" />
-				<meta
-					name="twitter:title"
-					content={
-						'InvisiProxy LTS | Free Web Proxy - Bypass Filters & Access Blocked Sites'
-					}
-				/>
+				<meta name="twitter:title" content={translate('home.title')} />
 				<meta
 					name="twitter:description"
-					content="Discover InvisiProxy LTS, a premier web proxy service that bypasses censorship and filters to provide secure access to blocked websites. Ideal for private browsing and overcoming network restrictions on devices like Chromebooks."
+					content={translate('home.twitterDescription')}
 				/>
 				<meta
 					name="twitter:image"
