@@ -64,7 +64,6 @@ export default function Partners() {
 					}
 				`}</script>
 			</Inline>
-			</Inline>
 		</>
 	);
 }
