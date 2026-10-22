@@ -495,53 +495,6 @@
       "&#x2062;",
       "&#x2061;",
       "&#xFE0F;"
-    ],
-    "terms": [
-      "InvisiProxy",
-      "InvisiProxy LTS",
-      "Holy Unblocker",
-      "Holy Unblocker LTS",
-      "Webretro",
-      "Ruffle",
-      "Tab Cloaker",
-      "Tab Cloakers",
-      "Search",
-      "Searching",
-      "Freely",
-      "Free",
-      "Surfing",
-      "Surf",
-      "VPN",
-      "VPNs",
-      "Server",
-      "Servers",
-      "Network",
-      "Networks",
-      "Connection",
-      "Connections",
-      "Privacy",
-      "Private",
-      "Games",
-      "Croxy",
-      "CroxyProxy",
-      "Proxy",
-      "Proxies",
-      "Proxied",
-      "Proxying",
-      "Unblock",
-      "Unblocked",
-      "Unblocking",
-      "Unblocks",
-      "Unblocker",
-      "Unblockers",
-      "Bypass",
-      "Titanium Network",
-      "Wisp",
-      "Tor",
-      "Onion",
-      "Ultraviolet",
-      "Scramjet",
-      "Rammerhead"
     ]
   },
   "splash": [
@@ -554,6 +507,6 @@
     "Tip: Getting 502 errors with Cloudflare? Check the GitHub to report the issue or reload the page! Sometimes it may just be a small issue. Enable Tor routing or swap transport methods in case the issue persists."
   ],
   "version": [
-    "8.1.1"
+    "8.2.0"
   ]
 }
