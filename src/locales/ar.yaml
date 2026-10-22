@@ -96,7 +96,7 @@ home:
       InvisiProxy LTS, an experimental web proxy service, can bypass web filters or 'blockers' regardless of whether the method of censorship is client-side or network-based. This includes the ability to bypass content blockers overseas put in place by governments (China/GFW, Russia, etc.), chrome extensions, localized client firewalls, and network-related filters.
     donate: >-
       Please consider donating to this project so we can keep things free! We offer more domains per month, beta access, personal domains and priority feature requests.<br/>You can donate <patreon>on Patreon here</patreon>.
-    patreonLabel: Donate on Patreon
+    patreonLabel: تبرع على باتريون
     imageAlt: Server Icon
   intent:
     title: Intent
@@ -106,12 +106,12 @@ home:
       This project's palette is built using <nord>Nord Theme</nord> for its optimal design color palette and prioritization of readable code syntax and UI components.
     imageAlt: File Code Icon
   usage:
-    title: Usage
+    title: الاستخدام
     body: >-
       Head to the <browse>Browse</browse> page and select one of the proxies featured! Afterwards, type out the site you wish to access in the search box. Each web proxy has its own level of effectiveness, speed and security. It is recommended to use Scramjet.<br/><br/>Example Website To Unblock: <code>https://youtube.com</code>
     imageAlt: Shield Icon
   apps:
-    title: Apps
+    title: التطبيقات
     body: >-
       InvisiProxy features a collection of pre-linked applications, including YouTube, Spotify, GeForce NOW, Discord, ChatGPT, Gemini and more!
     imageAlt: Application Icon
@@ -123,7 +123,7 @@ home:
     imageAlt: Hosting and Deployment Icon
     imageTitle: Hosting and Deployment for InvisiProxy LTS
   contributing:
-    title: Contributing
+    title: المساهمة
     body: >-
       <strong>InvisiProxy LTS</strong> thrives due to the dedicated efforts of our amazing contributors. As an open-source project, <strong>InvisiProxy LTS</strong> relies on the passion of its community to bypass internet censorship and help users improve access to information.
     start: To start contributing, visit our <github>GitHub repository.</github>
@@ -146,12 +146,12 @@ home:
   closing: It's time to browse the internet freely.
   tryFree: Try InvisiProxy For Free
 settings:
-  title: Settings
-  close: Close settings
+  title: الإعدادات
+  close: إغلاق الإعدادات
   language:
-    title: Language
-    description: Choose the language of the site. Automatic follows your browser.
-    automatic: Automatic
+    title: اللغة
+    description: اختر لغة الموقع. يتبع تلقائياً المتصفح الخاص بك.
+    automatic: تلقائي
   tab:
     title: Tab appearance
     description: Customize the title and icon shown in your browser tab.
@@ -163,21 +163,21 @@ settings:
     apply: Apply
     findIcon: Find an icon URL →
   browsing:
-    title: Browsing
+    title: التصفح
     transport: Transport
-    searchEngine: Search engine
+    searchEngine: محرك البحث
     theme: Theme
     themes:
-      dark: Dark
-      light: Light
+      dark: داكن
+      light: فاتح
       nord: Nordish
-    autocomplete: Autocomplete
+    autocomplete: الإكمال التلقائي
     autocompleteDescription: Show proxied search suggestions.
   privacy:
-    title: Privacy
-    hideAds: Hide ads
-    hideAdsDescription: Block ads while browsing.
-    hideHistory: Hide history
+    title: الخصوصية
+    hideAds: إخفاء الإعلانات
+    hideAdsDescription: منع الإعلانات أثناء التصفح.
+    hideHistory: إخفاء السجل
     hideHistoryDescription: Reduce saved browsing history. May affect some sites.
     preventLeaks: Prevent tab leaks
     preventLeaksDescription: Restrict popups and new tabs. May break some sites.
@@ -201,14 +201,14 @@ header:
   settingsMenu: Settings menu
   toggleMenu: Toggle navigation menu
   browse:
-    label: Browse
+    label: تصفح
     title: Browse - Bypass restrictions on the web
   apps:
-    label: Apps
-    mobileLabel: Applications
-    title: Applications - Browse a selection of useful applications
+    label: التطبيقات
+    mobileLabel: التطبيقات
+    title: التطبيقات - تصفح مجموعة مختارة من التطبيقات المفيدة
   partners:
-    label: Partners
+    label: الشركاء
     title: Partners - Explore our partner projects
   docs:
     label: Docs
@@ -220,7 +220,7 @@ header:
     label: Credits
     title: Credits - Acknowledgements and contributions
   privacy:
-    label: Privacy
+    label: الخصوصية
     mobileLabel: TOS
     title: Privacy Policy - Information on user privacy
 footer:
@@ -228,7 +228,7 @@ footer:
   tagline: Global Web Proxy Innovation, Done Right.
   dependencies: Dependencies
   transports: Transports
-  services: Services
+  services: الخدمات
   about: About
   solidjs: SolidJS - Simple and performant reactivity for building user interfaces.
   wispurr: High-Performance and Feature Focused Wisp v1/v2 Server implementation in Golang.
