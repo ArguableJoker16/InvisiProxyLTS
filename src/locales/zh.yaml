@@ -13,7 +13,7 @@ language:
   countries: [ ]
   # Replace words here with respective translations to avoid them being blocked by filters.
   maskedTerms:
-    - InvisiProxy
+    - Invis代理
     - InvisiProxy LTS
     - Holy Unblocker
     - Holy Unblocker LTS
@@ -21,36 +21,36 @@ language:
     - Ruffle
     - Tab Cloaker
     - Tab Cloakers
-    - Search
-    - Searching
+    - 搜索
+    - 正在搜索
     - Freely
-    - Free
+    - 免费的
     - Surfing
-    - Surf
+    - 浏览
     - VPN
     - VPNs
     - Server
     - Servers
-    - Network
+    - 网络
     - Networks
-    - Connection
+    - 连接
     - Connections
     - Privacy
     - Private
-    - Games
+    - 电脑游戏
     - Croxy
     - CroxyProxy
-    - Proxy
-    - Proxies
+    - 代理
+    - 代理
     - Proxied
     - Proxying
-    - Unblock
+    - 解封
     - Unblocked
-    - Unblocking
+    - 正在解封
     - Unblocks
-    - Unblocker
+    - 解封工具
     - Unblockers
-    - Bypass
+    - 绕过
     - Titanium Network
     - Wisp
     - Tor
@@ -61,7 +61,7 @@ language:
 home:
   title: InvisiProxy LTS | Free Web Proxy - Bypass Filters & Access Blocked Sites
   description: >-
-    InvisiProxy LTS is a cutting-edge web proxy service designed to bypass web filters and blockers. Whether dealing with client-side or network-based censorship, InvisiProxy LTS provides seamless access to blocked sites and secure, private browsing on devices like Chromebooks. Overcome content blockers, Chrome extensions, firewalls, and more with our advanced proxy solution.
+    InvisiProxy LTS 是一款先进的网页代理服务，旨在绕过网络过滤与封锁。无论是应对客户端还是网络层面的审查，InvisiProxy LTS 都能在 Chromebook 等设备上无缝访问被封锁的网站，并提供安全、私密的浏览体验。借助我们先进的代理解决方案，轻松突破内容拦截器、Chrome 扩展程序、防火墙等限制。
   ogDescription: >-
     InvisiProxy LTS is a top-tier web proxy service that bypasses network and browser restrictions to access blocked websites securely. Enjoy a seamless browsing experience with robust security and advanced features.
   twitterDescription: >-
