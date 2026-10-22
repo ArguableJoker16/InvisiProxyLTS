@@ -9,6 +9,7 @@ import {
 	loadLocales,
 	localeManifest,
 	localePath,
+	localizeSitemap,
 } from '../../src/build/locales.ts';
 import { buildValues } from '../../src/build/values.ts';
 import {
@@ -16,7 +17,14 @@ import {
 	type Languages,
 	pickLanguage,
 } from '../../src/server/language.ts';
-import { type Messages, setSiteValues, translate } from '../../src/site.ts';
+import {
+	languageTag,
+	type Messages,
+	pageUrl,
+	route,
+	setSiteValues,
+	translate,
+} from '../../src/site.ts';
 
 function flatten(messages: Messages, prefix = ''): Record<string, string> {
 	return Object.fromEntries(
@@ -149,4 +157,71 @@ test('the Language cookie wins, then Accept-Language, then the country', () => {
 		'en'
 	);
 	assert.equal(pick({}), 'en');
+});
+
+test('in SEO mode other languages get their own page URLs', () => {
+	const pages = (locale: string, usingSEO = true) =>
+		setSiteValues({
+			...buildValues,
+			usingSEO,
+			basePath: '/',
+			aliases: {},
+			cacheBust: {},
+			locale,
+			locales: [
+				{ code: 'en', name: 'English' },
+				{ code: 'fr', name: 'Français' },
+			],
+			pageNames: ['', 'questions'],
+		});
+	pages('fr');
+	assert.equal(route('/'), '/fr/');
+	assert.equal(route('/questions'), '/fr/questions');
+	assert.equal(route('questions'), '/fr/questions');
+	assert.equal(route('/patreon'), '/patreon');
+	assert.equal(route('/assets/js/common.js'), '/assets/js/common.js');
+	assert.equal(pageUrl('questions'), 'https://invisiproxy.com/fr/questions');
+	assert.equal(pageUrl('', 'en'), 'https://invisiproxy.com/');
+	pages('en');
+	assert.equal(route('/questions'), '/questions');
+	pages('fr', false);
+	assert.equal(route('/questions'), '/questions');
+	assert.equal(pageUrl('questions'), 'https://invisiproxy.com/questions');
+	assert.equal(languageTag('en'), 'en-US');
+	assert.equal(languageTag('fr'), 'fr-FR');
+	assert.equal(languageTag('pt-br'), 'pt-BR');
+});
+
+test('the sitemap lists every language of each page', () => {
+	const xml = [
+		'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+		'    <url>',
+		'        <loc>https://invisiproxy.com/</loc>',
+		'        <priority>1.00</priority>',
+		'    </url>',
+		'    <url>',
+		'        <loc>https://invisiproxy.com/questions</loc>',
+		'    </url>',
+		'</urlset>',
+	].join('\n');
+	assert.equal(localizeSitemap(xml, ['en']), xml);
+	const sitemap = localizeSitemap(xml, ['en', 'fr']);
+	assert.match(sitemap, /xmlns:xhtml="http:\/\/www\.w3\.org\/1999\/xhtml"/);
+	assert.deepEqual(
+		[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => loc),
+		[
+			'https://invisiproxy.com/',
+			'https://invisiproxy.com/fr/',
+			'https://invisiproxy.com/questions',
+			'https://invisiproxy.com/fr/questions',
+		]
+	);
+	const links = (hreflang: string, href: string) =>
+		sitemap.split(
+			`<xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}"/>`
+		).length - 1;
+	assert.equal(links('fr', 'https://invisiproxy.com/fr/questions'), 2);
+	assert.equal(links('en', 'https://invisiproxy.com/questions'), 2);
+	assert.equal(links('x-default', 'https://invisiproxy.com/'), 2);
+	assert.equal(sitemap.split('<priority>1.00</priority>').length - 1, 2);
 });

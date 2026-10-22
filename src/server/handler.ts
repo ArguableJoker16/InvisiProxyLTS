@@ -214,21 +214,30 @@ export function createSiteHandler({
 	const languageVary = config.geoLanguage
 		? 'Cookie, Accept-Language, CF-IPCountry'
 		: 'Cookie, Accept-Language';
-	// The language code for this request, or '' for the default language.
+	const prefixedLanguages = config.usingSEO
+		? languages.codes.filter((code) => code !== languages.default)
+		: [];
+	const redirectToLanguage =
+		prefixedLanguages.length > 0 && !config.disguiseFiles;
 	const languageFor = (req: IncomingMessage) => {
 		if (languages.codes.length < 2) return '';
-		const language = pickLanguage(req, languages);
+		const useCountry =
+			config.geoLanguage &&
+			(!config.usingSEO || !!req.headers['accept-language']);
+		const language = pickLanguage(req, languages, useCountry);
 		return language === languages.default ? '' : language;
 	};
-	// The translated copy of a page, written by the build to locales/<code>/.
-	const translated = (file: string, req: IncomingMessage) => {
-		const language = file.endsWith('.html') && languageFor(req);
+	const translated = (file: string, language: string) => {
 		const copy = `locales/${language}/${file}`;
-		return language && existsSync(new URL(copy, siteUrl)) ? copy : file;
+		return language &&
+			file.endsWith('.html') &&
+			existsSync(new URL(copy, siteUrl))
+			? copy
+			: file;
 	};
 
-	const notFound = (req: IncomingMessage, res: ServerResponse) =>
-		reply(res, 404, pageTypes.default, preloaded404(languageFor(req)));
+	const notFound = (res: ServerResponse, language: string) =>
+		reply(res, 404, pageTypes.default, preloaded404(language));
 
 	const undisguise = (path: string) =>
 		path.slice(0, path.length - 1 - disguiseExtension.length);
@@ -237,18 +246,15 @@ export function createSiteHandler({
 		req: IncomingMessage,
 		res: ServerResponse,
 		name: string,
-		modified: boolean
+		modified: boolean,
+		language: string,
+		fromPath: boolean
 	) {
 		if (name === 'favicon.ico') return reply(res, 200);
 
 		if (Object.hasOwn(externalPages, name)) {
-			if (modified)
-				return reply(
-					res,
-					404,
-					pageTypes.html,
-					preloaded404(languageFor(req))
-				);
+			if (modified || fromPath)
+				return reply(res, 404, pageTypes.html, preloaded404(language));
 			const target = externalPages[name];
 			return redirect(
 				res,
@@ -256,7 +262,7 @@ export function createSiteHandler({
 			);
 		}
 
-		if (!Object.hasOwn(pages, name)) return notFound(req, res);
+		if (!Object.hasOwn(pages, name)) return notFound(res, language);
 		const file =
 			!name && config.disguiseFiles && !modified
 				? entryPointFile
@@ -266,15 +272,28 @@ export function createSiteHandler({
 			: pageTypes[extension(file)] || pageTypes.default;
 		if (file === entryPointFile)
 			return reply(res, 200, type, tryReadFile(file, siteUrl));
-		if (languages.codes.length > 1) res.setHeader('Vary', languageVary);
-		reply(res, 200, type, tryReadFile(translated(file, req), siteUrl));
+		if (fromPath && !file.endsWith('.html')) return notFound(res, language);
+		if (!fromPath && languages.codes.length > 1)
+			res.setHeader('Vary', languageVary);
+		if (
+			redirectToLanguage &&
+			!fromPath &&
+			language &&
+			file.endsWith('.html')
+		) {
+			const url = req.url || '';
+			const query = url.includes('?') ? url.slice(url.indexOf('?')) : '';
+			return redirect(res, `${base}${language}/${name}${query}`);
+		}
+		reply(res, 200, type, tryReadFile(translated(file, language), siteUrl));
 	}
 
 	function serveStatic(
 		req: IncomingMessage,
 		res: ServerResponse,
 		dir: StaticDir,
-		file: string
+		file: string,
+		language: string
 	) {
 		res.removeHeader('Content-Type');
 		const type = precompressedTypes[extension(file)];
@@ -294,11 +313,11 @@ export function createSiteHandler({
 				if (encoding) res.setHeader('Content-Encoding', encoding[0]);
 				if (dir.vary) res.setHeader('Vary', 'Accept-Encoding');
 			});
-			stream.on('directory', () => notFound(req, res));
+			stream.on('directory', () => notFound(res, language));
 			stream.on('error', () =>
 				index < candidates.length
 					? attempt(index + 1)
-					: notFound(req, res)
+					: notFound(res, language)
 			);
 			stream.pipe(res);
 		};
@@ -307,8 +326,21 @@ export function createSiteHandler({
 
 	return (req, res) => {
 		applyResponseHooks(req, res, development);
-		const url = req.url || '/';
-		const path = trimSlash(url.split('?')[0].replace(/\/{2,}/g, '/'));
+		let url = req.url || '/';
+		let path = trimSlash(url.split('?')[0].replace(/\/{2,}/g, '/'));
+		// /fr/questions is the French copy of /questions.
+		const prefix = prefixedLanguages.find(
+			(code) => path === base + code || path.startsWith(`${base}${code}/`)
+		);
+		if (prefix) {
+			const query = url.indexOf('?');
+			path = trimSlash(
+				base +
+					path.slice(base.length + prefix.length).replace(/^\//, '')
+			);
+			url = path + (query < 0 ? '' : url.slice(query));
+		}
+		const language = prefix || languageFor(req);
 
 		if (req.method === 'POST' && path === dispenserPath)
 			return void dispense(req, res);
@@ -325,7 +357,7 @@ export function createSiteHandler({
 			res.setHeader('Access-Control-Allow-Origin', 'null');
 		}
 		if (req.method !== 'GET' && req.method !== 'HEAD')
-			return notFound(req, res);
+			return notFound(res, language);
 
 		if (path === wispRoute)
 			return wispRedirect
@@ -350,7 +382,9 @@ export function createSiteHandler({
 				req,
 				res,
 				modified ? undisguise(name) : name,
-				modified
+				modified,
+				language,
+				!!prefix
 			);
 		}
 
@@ -359,12 +393,18 @@ export function createSiteHandler({
 			const name = decode(github[1]);
 			return Object.hasOwn(externalPages.github, name)
 				? redirect(res, externalPages.github[name])
-				: notFound(req, res);
+				: notFound(res, language);
 		}
 
 		const dir =
 			staticDirs.find((dir) => path.startsWith(dir.prefix)) || pagesDir;
 		const file = path.slice(dir.prefix.length);
-		serveStatic(req, res, dir, modified ? undisguise(file) : file);
+		serveStatic(
+			req,
+			res,
+			dir,
+			modified ? undisguise(file) : file,
+			language
+		);
 	};
 }

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 import { config } from '../config.ts';
 import { projectDir } from '../constants.ts';
-import type { Messages, SiteValues } from '../site.ts';
+import { type Messages, type SiteValues, siteOrigin } from '../site.ts';
 
 export const defaultLocale = 'en';
 export const localesDir = join(projectDir, 'src/locales');
@@ -106,6 +106,42 @@ export function withLocale(
 			...new Set([...english.maskedTerms, ...locale.maskedTerms]),
 		],
 	};
+}
+
+export function localizeSitemap(xml: string, codes: string[]): string {
+	if (codes.length < 2) return xml;
+	const translatedUrl = (loc: string, code: string) => {
+		if (code === codes[0]) return loc;
+		const url = new URL(loc);
+		url.pathname = `/${code}${url.pathname}`;
+		return url.href;
+	};
+	return xml
+		.replace(
+			'<urlset',
+			'<urlset\n    xmlns:xhtml="http://www.w3.org/1999/xhtml"'
+		)
+		.replace(/<url>([\s\S]*?)<\/url>/g, (entry, body: string) => {
+			const loc = /<loc>([^<]+)<\/loc>/.exec(body)?.[1];
+			if (!loc?.startsWith(`${siteOrigin}/`)) return entry;
+			const links = [
+				...codes.map((code) => [code, translatedUrl(loc, code)]),
+				['x-default', loc],
+			]
+				.map(
+					([hreflang, href]) =>
+						`\n        <xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}"/>`
+				)
+				.join('');
+			return codes
+				.map(
+					(code) =>
+						`<url>${body
+							.replace(loc, translatedUrl(loc, code))
+							.replace(/\s*$/, `${links}\n    `)}</url>`
+				)
+				.join('\n    ');
+		});
 }
 
 export function localeManifest(locales: Locale[]): LocaleManifest {

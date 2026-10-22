@@ -17,6 +17,9 @@ export {
 	ifDisguise,
 	inlineHtml,
 	translate,
+	languageTag,
+	pageUrl,
+	siteOrigin,
 } from '../site.ts';
 export { getSplash } from '../obfuscation/masks.ts';
 

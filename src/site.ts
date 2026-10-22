@@ -20,6 +20,7 @@ export interface SiteValues {
 	errors: Record<string, { beforeScript: string; afterScript: string }>;
 	locale: string;
 	locales: { code: string; name: string }[];
+	pageNames?: string[];
 	messages?: Messages;
 	fallbackMessages?: Messages;
 	readAsset?: (path: string) => string | undefined;
@@ -52,8 +53,34 @@ export function setSiteValues(next: SiteValues) {
 export function randomItem<T>(items: readonly T[]): T {
 	return items[Math.floor(Math.random() * items.length)];
 }
+
+// In SEO mode every language but the default lives under /<code>/ so search
+// engines can index each one; otherwise all languages share the same URLs.
+export const siteOrigin = 'https://invisiproxy.com';
+
+export function localePrefix(code = values.locale) {
+	return values.usingSEO && code !== values.locales[0]?.code
+		? `${code}/`
+		: '';
+}
+
+// Public URL of a page (a route name such as 'questions') in a language.
+export const pageUrl = (name: string, code = values.locale) =>
+	`${siteOrigin}/${localePrefix(code)}${name}`;
+
+// e.g. 'fr' gives 'fr-FR' and 'pt-br' gives 'pt-BR'.
+export function languageTag(code: string) {
+	const { language, region } = new Intl.Locale(code).maximize();
+	return region ? `${language}-${region}` : language;
+}
+
 export function route(path: string, conditional?: 'inline'): string {
 	const endPoint = /((?<![^/])github\/)?[^/]+$/;
+	const page = /^\/?([^/.]*)$/.exec(path);
+	const base =
+		page && values.pageNames?.includes(page[1])
+			? values.basePath + localePrefix()
+			: values.basePath;
 	if (conditional === 'inline' && values.inlineAssets)
 		return path.replace(
 			endPoint,
@@ -78,7 +105,7 @@ export function route(path: string, conditional?: 'inline'): string {
 				values.aliases[part] ||
 				part
 		)
-		.replace(/^~?\/+|^~$|^(?!\.\/)/, values.basePath);
+		.replace(/^~?\/+|^~$|^(?!\.\/)/, base);
 }
 export function ifSEO(text: string) {
 	return values.usingSEO ? text : '';
