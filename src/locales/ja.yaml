@@ -14,43 +14,43 @@ language:
   # Replace words here with respective translations to avoid them being blocked by filters.
   maskedTerms:
     - InvisiProxy
-    - InvisiProxy 長期サポート版
+    - InvisiProxy LTS
     - Holy Unblocker
-    - Holy Unblocker 長期サポート版
+    - Holy Unblocker LTS
     - Webretro
     - Ruffle
-    - Tab Cloaker
-    - Tab Cloakers
-    - Search
-    - Searching
-    - Freely
-    - Free
-    - Surfing
-    - Surf
+    - タブの偽装
+    - タブの偽装
+    - 検索
+    - 検索中
+    - フリー
+    - フリー
+    - ネットサーフィン中
+    - ネットサーフィン
     - VPN
-    - VPNs
-    - Server
-    - Servers
-    - Network
-    - Networks
-    - Connection
-    - Connections
-    - Privacy
-    - Private
-    - Games
+    - VPN
+    - サーバー
+    - サーバー
+    - ネットワーク
+    - ネットワーク
+    - 接続
+    - 接続
+    - プライバシー
+    - プライベート
+    - ゲーム
     - Croxy
     - CroxyProxy
-    - Proxy
-    - Proxies
-    - Proxied
-    - Proxying
-    - Unblock
-    - Unblocked
-    - Unblocking
-    - Unblocks
-    - Unblocker
-    - Unblockers
-    - Bypass
+    - プロキシー
+    - プロキシー
+    - プロキシー済
+    - プロキシー中
+    - ブロック解除
+    - ブロック解除
+    - ブロック解除
+    - ブロック解除
+    - ブロッカ解除
+    - ブロック解除
+    - 回避
     - Titanium Network
     - Wisp
     - Tor
@@ -59,13 +59,13 @@ language:
     - Scramjet
     - Rammerhead
 home:
-  title: InvisiProxy LTS | Free Web Proxy - Bypass Filters & Access Blocked Sites
+  title: InvisionProxy LTS | 無料のウェブプロキシ - フィルター回避 & ブロックされたサイトにアクセス
   description: >-
-    InvisiProxy LTS is a cutting-edge web proxy service designed to bypass web filters and blockers. Whether dealing with client-side or network-based censorship, InvisiProxy LTS provides seamless access to blocked sites and secure, private browsing on devices like Chromebooks. Overcome content blockers, Chrome extensions, firewalls, and more with our advanced proxy solution.
+    InvisionProxy LTSは、Webフィルタやブロッカーを回避するために設計された最先端のWebプロキシです。 クライアント側またはネットワークベースの検閲を扱う場合でも、InvisionProxy LTSは、ブロックされたサイトへのシームレスなアクセスと、Chromebookなどのデバイスでの安全なプライベートブラウジングを提供します。 ブロッカー、Chrome拡張機能、ファイアウォールなどを高度なプロキシで回避しましょう。
   ogDescription: >-
-    InvisiProxy LTS is a top-tier web proxy service that bypasses network and browser restrictions to access blocked websites securely. Enjoy a seamless browsing experience with robust security and advanced features.
+    InvisionProxy LTSは、ブロックされたウェブサイトに安全にアクセスするためのネットワークとブラウザの制限を回避する、最高レベルのWebプロキシです。 堅牢なセキュリティと高度な機能でシームレスなブラウジングをお楽しみください。
   twitterDescription: >-
-    Discover InvisiProxy LTS, a premier web proxy service that bypasses censorship and filters to provide secure access to blocked websites. Ideal for private browsing and overcoming network restrictions on devices like Chromebooks.
+    InvisionProxy LTSをお試しください。ブロックされたウェブサイトへアクセスするために、検閲やフィルタをバイパスする優れたWebプロキシサービスです。 Chromebookなどでのプライベートブラウジングや制限を克服するのに最適です。
   headline: End Internet Censorship.
   tagline: Privacy right at your fingertips.
   browseNow: Browse Now
