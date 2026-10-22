@@ -58,6 +58,12 @@ export default function Partners() {
 			</div>
 			<Inline>
 				<script src={route('assets/js/card.js', 'inline')} />
+				<script>{`
+					if (!localStorage.getItem("playobsidian.com@theme")) {
+						localStorage.setItem("playobsidian.com@theme", "Top Hat");
+					}
+				`}</script>
+			</Inline>
 			</Inline>
 		</>
 	);
