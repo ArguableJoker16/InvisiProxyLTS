@@ -255,6 +255,14 @@ Every other localized changes for source randomization, auto-minify, etc. are lo
 - `usingSEO`: Enable Source Randomization which randomizes the source by swapping chunks of data specified in `./src/data.json`. Highly useful for masking keywords that will automatically flag or block InvisiProxy LTS as well as preventing source blocks.
 - `verbose`: Enables compiling and building messages to see progress and possible issues while compiling.
 - `mirrorLinksFile`: Server-only file used by the Links page dispenser, defaulting to `private/mirror-links.txt`. Relative paths are resolved from the project root; absolute paths are also supported. Use one HTTP(S) URL per line and keep the file outside `views/` so it is not publicly served. Restart the server after changing this setting.
+- `geoLanguage`: Enables automatic language selection using Cloudflare's `CF-IPCountry` header. Only enable this behind Cloudflare, since the header can otherwise be set by anyone. Countries are listed per language in `./src/locales/example.yaml`.
+- `singleLanguage`: When `true`, only the language set in `language` is built and every visitor gets it, with the Language setting hidden. Useful for Docker or other deployments that only need one language, since builds are faster and smaller. Defaults to `false`.
+- `language`: The language to build when `singleLanguage` is on, matching a file in `./src/locales/` (e.g. `en` for `en.yaml`). Defaults to `en`. For Docker, set this in `config.json` before running `docker build` or `docker compose build`, since languages are chosen at build time.
+
+#### Translations
+
+Translations can be placed within `./src/locales/`. Please reference the original english YAML and read respective comments. This project uses Crowdin for translations. Open an issue or join the discord if you want to contribute!
+
 #### Tor/Onion/SOCKS5 Routing Setup
 
 You need to setup Tor (no GUI need/GUI is alright. With GUI replace port 9050 with 9150) in order for the Onion Routing setting to work!
