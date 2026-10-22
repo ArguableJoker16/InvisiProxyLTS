@@ -7,15 +7,16 @@
 #      translate the words between tags. Keys can be removed to keep English.
 #   4. Run `pnpm test:unit` to check the file against this one.
 language:
-  name: English
+  name: 日本語
   # Country codes (ISO 3166-1, as sent by Cloudflare's CF-IPCountry header)
+  # https://www.iso.org/obp/ui/#search ; "Country codes"
   countries: [ ]
   # Replace words here with respective translations to avoid them being blocked by filters.
   maskedTerms:
     - InvisiProxy
-    - InvisiProxy LTS
+    - InvisiProxy 長期サポート版
     - Holy Unblocker
-    - Holy Unblocker LTS
+    - Holy Unblocker 長期サポート版
     - Webretro
     - Ruffle
     - Tab Cloaker
