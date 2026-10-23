@@ -79,9 +79,6 @@ function closestCode(tag: string, codes: string[]) {
 	return closest;
 }
 
-// Picks a language in this order: the Language cookie set from Settings, the
-// browser's Accept-Language header, the visitor's country (Cloudflare's
-// CF-IPCountry header, only with geoLanguage on), then the default.
 export function pickLanguage(
 	req: IncomingMessage,
 	languages: Languages,
@@ -91,16 +88,16 @@ export function pickLanguage(
 	const chosen = readCookie(req.headers.cookie, 'Language')?.toLowerCase();
 	if (chosen && codes.includes(chosen)) return chosen;
 
-	for (const tag of acceptedLanguages(req.headers['accept-language'])) {
-		if (codes.includes(tag)) return tag;
-		const closest = closestCode(tag, codes);
-		if (closest) return closest;
-	}
-
 	const country = req.headers['cf-ipcountry'];
 	if (useCountry && typeof country === 'string') {
 		const code = languages.countries[country.toUpperCase()];
 		if (code) return code;
+	}
+
+	for (const tag of acceptedLanguages(req.headers['accept-language'])) {
+		if (codes.includes(tag)) return tag;
+		const closest = closestCode(tag, codes);
+		if (closest) return closest;
 	}
 
 	return languages.default;

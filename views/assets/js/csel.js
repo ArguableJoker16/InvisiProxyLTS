@@ -423,6 +423,11 @@ if (document.getElementById('csel')) {
     else removeStorage('UseAC');
   });
 
+  attachClassEventListener('search-nav-fix', 'change', (e) => {
+    if (checkBooleanState(e.target) === true) setStorage('SearchNavFix', true);
+    else removeStorage('SearchNavFix');
+  });
+
   attachClassEventListener('sandbox', 'change', (e) => {
     if (checkBooleanState(e.target) === true) {
       setStorage('Sandbox', true);
@@ -614,6 +619,11 @@ useStorageArgs('ErudaEnabled', (s) => {
 useStorageArgs('UseAC', (s) => {
   if (s === false)
     classUpdateHandler(document.getElementsByClassName('useac'), 'off')();
+});
+
+useStorageArgs('SearchNavFix', (s) => {
+  if (s === true)
+    classUpdateHandler(document.getElementsByClassName('search-nav-fix'), 'on')();
 });
 
 useStorageArgs('Sandbox', (s) => {

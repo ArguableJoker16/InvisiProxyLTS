@@ -69,6 +69,13 @@ export default function ProxySettings() {
 							)}
 							class="useonion"
 						/>
+						<SettingToggle
+							label={translate('proxySettings.searchNavFix')}
+							description={translate(
+								'proxySettings.searchNavFixDescription'
+							)}
+							class="search-nav-fix"
+						/>
 					</div>
 					<div class="proxy-settings-grid-right">
 						<div class="settings-card">
