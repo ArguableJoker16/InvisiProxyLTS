@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import { describe, test } from 'node:test';
 import { buildValues } from '../../src/build/values.ts';
 import { maskDocument } from '../../src/obfuscation/mask-document.ts';
 import { maskText } from '../../src/obfuscation/masks.ts';
@@ -9,32 +9,34 @@ const mask = (usingSEO: boolean) =>
 	setSiteValues({
 		...buildValues,
 		usingSEO,
-		characters: ['\u200b'],
+		characters: ['​'],
 		maskedTerms: ['Proxy'],
 	});
-const unmask = (text: string) => text.replaceAll('\u200b', '');
+const unmask = (text: string) => text.replaceAll('​', '');
 
-test('masking hides visible text without touching code or attributes', () => {
-	mask(false);
-	const html =
-		'<p id="Proxy" title="Proxy">Proxy &amp; text</p><script>const x = "Proxy";</script><input type="text" value="Proxy">';
-	const masked = maskDocument(html);
-	assert.notEqual(masked, html);
-	assert.equal(unmask(masked), html);
-	for (const literal of [
-		'id="Proxy"',
-		'const x = "Proxy";',
-		'<input type="text" value="Proxy">',
-	])
-		assert.ok(masked.includes(literal), literal);
-	assert.ok(!masked.includes('title="Proxy"'));
-	assert.notEqual(maskText('Proxy'), 'Proxy');
-	assert.equal(unmask(maskText('Proxy')), 'Proxy');
-});
+describe('Masking', () => {
+	test('Visible text and titles are masked, while scripts, IDs and input values stay intact.', () => {
+		mask(false);
+		const html =
+			'<p id="Proxy" title="Proxy">Proxy &amp; text</p><script>const x = "Proxy";</script><input type="text" value="Proxy">';
+		const masked = maskDocument(html);
+		assert.notEqual(masked, html);
+		assert.equal(unmask(masked), html);
+		for (const literal of [
+			'id="Proxy"',
+			'const x = "Proxy";',
+			'<input type="text" value="Proxy">',
+		])
+			assert.ok(masked.includes(literal), literal);
+		assert.ok(!masked.includes('title="Proxy"'));
+		assert.notEqual(maskText('Proxy'), 'Proxy');
+		assert.equal(unmask(maskText('Proxy')), 'Proxy');
+	});
 
-test('SEO mode leaves visible text intact', () => {
-	mask(true);
-	const html = '<p title="Proxy">Proxy &amp; text</p>';
-	assert.equal(maskText('Proxy'), 'Proxy');
-	assert.equal(maskDocument(html), html);
+	test('SEO mode leaves all text unmasked.', () => {
+		mask(true);
+		const html = '<p title="Proxy">Proxy &amp; text</p>';
+		assert.equal(maskText('Proxy'), 'Proxy');
+		assert.equal(maskDocument(html), html);
+	});
 });

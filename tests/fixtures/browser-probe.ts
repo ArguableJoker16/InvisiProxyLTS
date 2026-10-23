@@ -70,7 +70,7 @@ try {
 
 	const toggle = page.locator(cls('mirror-links-toggle'));
 	const label = (await toggle.locator('span').textContent()) ?? '';
-	assert.notEqual(label, strip(label), 'labels are masked');
+	assert.notEqual(label, strip(label), 'Button text should be masked.');
 	assert.equal(strip(label), 'Mirrors');
 
 	const button = page.locator('#dispense-link');
@@ -80,7 +80,7 @@ try {
 	assert.notEqual(
 		await button.evaluate((el) => getComputedStyle(el).borderRadius),
 		'0px',
-		'renamed classes keep their styles'
+		'Renamed classes should keep their styles.'
 	);
 
 	await toggle.click();
@@ -166,7 +166,11 @@ try {
 			input.dispatchEvent(new Event('change', { bubbles: true }));
 		});
 	const hidden = await page.goto(route('pages/nav/partners.html'));
-	assert.equal(hidden?.status(), 404, 'hidden history blocks direct visits');
+	assert.equal(
+		hidden?.status(),
+		404,
+		'Hidden history should block direct visits to pages.'
+	);
 } finally {
 	await browser.close();
 	target.close();
