@@ -226,7 +226,6 @@ export default function Settings() {
 								'settings.privacy.hideHistoryDescription'
 							)}
 							class="history-toggle"
-							checked
 						/>
 						<SettingToggle
 							label={translate('settings.privacy.preventLeaks')}

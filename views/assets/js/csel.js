@@ -587,12 +587,14 @@ useStorageArgs('UseSocks5', (s) => {
 });
 
 useStorageArgs('HistoryHide', (s) => {
+  const hide = s === 'hidehistory' || (!s && !values.usingSEO);
+
   classUpdateHandler(
     document.getElementsByClassName('history-toggle'),
-    s === 'hidehistory' || !s
+    hide
   )();
 
-  if (s === 'hidehistory' || !s) {
+  if (hide) {
     setCookie('HistoryHide', 'true');
   } else {
     removeCookie('HistoryHide');

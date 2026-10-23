@@ -91,7 +91,6 @@ export default function ProxySettings() {
 									'proxySettings.hideHistoryDescription'
 								)}
 								class="history-toggle"
-								checked
 							/>
 						</div>
 						<button
