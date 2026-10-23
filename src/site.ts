@@ -152,7 +152,7 @@ export const sites = Object.freeze([
 	{ name: 'Discord', url: 'https://discord.com/app' },
 	{ name: 'ChatGPT', url: 'https://chat.openai.com/chat' },
 	{ name: 'Gemini', url: 'https://gemini.google.com/app' },
-	{ name: 'Youtube', url: 'https://youtube.com' },
+	{ name: 'Youtube', url: 'https://youtube.com', icon: 'https://www.youtube.com/img/favicon_144.png',},
 	{ name: 'Invidious', url: 'https://docs.invidious.io/instances' },
 	{ name: 'FMHY', url: 'https://fmhy.net' },
 	{ name: 'GeForce NOW', url: 'https://play.geforcenow.com' },

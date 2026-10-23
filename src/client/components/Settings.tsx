@@ -18,30 +18,28 @@ export default function Settings() {
 			</div>
 			<div class="settings-content-body">
 				<div class="settings-column">
-					{values.locales.length > 1 && (
-						<section class="settings-card">
-							<h2 class="cseltitle">
-								{translate('settings.language.title')}
-							</h2>
-							<p class="setting-description">
-								{translate('settings.language.description')}
-							</p>
-							<div class="setting-field">
-								<select
-									id="settings-language"
-									class="language-list"
-									aria-label={translate('settings.language.title')}
-								>
-									<option value="auto" selected>
-										{translate('settings.language.automatic')}
-									</option>
-									{values.locales.map(({ code, name }) => (
-										<option value={code}>{name}</option>
-									))}
-								</select>
-							</div>
-						</section>
-					)}
+					<section class="settings-card">
+						<h2 class="cseltitle">
+							{translate('settings.language.title')}
+						</h2>
+						<p class="setting-description">
+							{translate('settings.language.description')}
+						</p>
+						<div class="setting-field">
+							<select
+								id="settings-language"
+								class="language-list"
+								aria-label={translate('settings.language.title')}
+							>
+								<option value="auto" selected>
+									{translate('settings.language.automatic')}
+								</option>
+								{values.locales.map(({ code, name }) => (
+									<option value={code}>{name}</option>
+								))}
+							</select>
+						</div>
+					</section>
 					<section class="settings-card">
 						<h2 class="cseltitle">
 							{translate('settings.browsing.title')}
