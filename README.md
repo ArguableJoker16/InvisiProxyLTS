@@ -32,8 +32,7 @@ This project serves mostly as a proof of concept for the ideal clientless soluti
 
 View the <a href="#deploy-InvisiProxy">self-deployment options</a> if you wish to self host this project. Can't deploy using any of the free options? Check out Koyeb or look into cheap, paid VPS hosting solutions. If you don't wish to self-host please click on the Mirror Links Menu on InvisiProxy.
 
-<img align="left" width="20px" src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/mirrors.png"></img>
-
+<img align="left" width="50px" src="https://raw.githubusercontent.com/InvisiProxy/InvisiProxyLTS/master/views/assets/img/mirrors.png"></img>
 **Be sure to join TitaniumNetwork's Discord for more official site links:** <a href="https://discord.gg/unblock">https://discord.gg/unblock</a>
 
 <br>
