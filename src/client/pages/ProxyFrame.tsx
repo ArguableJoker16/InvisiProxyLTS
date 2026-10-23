@@ -15,6 +15,7 @@ export default function ProxyFrame() {
 			<Keywords />
 			<AntiExfil />
 			<div class="loader loader-active">
+				<p class="loader-text">{translate('frame.loading')}</p>
 				<div class="loader-w"></div>
 			</div>
 			<div class="omnibar" id="pr-sj">

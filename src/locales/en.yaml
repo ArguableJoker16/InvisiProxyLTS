@@ -818,6 +818,7 @@ scramjet:
 
 frame:
   searchPlaceholder: Type a URL or search...
+  loading: Loading the web proxy...
 
 scramjetError:
   title: Scramjet Network Error

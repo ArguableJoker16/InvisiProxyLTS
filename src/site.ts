@@ -166,18 +166,19 @@ export const sites = Object.freeze([
 ]);
 
 export const partners = Object.freeze([
-	{
-		name: 'Titanium Network',
-		url: 'https://titaniumnetwork.org',
-		newtab: false,
-	},
+	{ name: 'Obsidian', url: 'https://playobsidian.com', newtab: false },
+	{ name: 'Night Network', url: 'https://night-network.org', newtab: false },
 	{
 		name: 'The Freedom Project',
 		url: 'https://nullatenus.com',
 		newtab: true,
 	},
 	{ name: 'Truffled', url: 'https://truffled.lol', newtab: false },
-	{ name: 'Obsidian', url: 'https://playobsidian.com', newtab: false },
+		{
+		name: 'Titanium Network',
+		url: 'https://titaniumnetwork.org',
+		newtab: false,
+	},
 ]);
 
 interface CreditPerson {
