@@ -135,9 +135,9 @@ Replit is no longer free and Heroku has a set policy against web proxies. Try Gi
 
 Either use the button above to deploy to the deployment options above or type the commands below on a dedicated server
 
-**THIS PROJECT REQUIRES NGINX NOT CADDY.** 
+**THIS PROJECT IS MADE TO SUPPORT NGINX; NOT CADDY.** 
 
-Please ensure you are using `Node 20.x` as well. `git` and `curl` are required dependencies:
+Please ensure you are using `Node 26.x` as well. `git` and `curl` are required dependencies:
 
 ```bash
 git clone https://github.com/InvisiProxy/InvisiProxyLTS.git
@@ -274,6 +274,8 @@ Simply host Tor using this guide: https://tb-manual.torproject.org/installation/
 Alternative Guide (for CLI): https://community.torproject.org/onion-services/setup/install/
 
 If you are hosting InvisiProxy LTS on a VPS utilizing Ubuntu consider attaching Tor to systemctl for easier production management. Once Tor is up and running on either Linux or Windows it will work automatically with InvisiProxy LTS when enabled by the user via the Settings menu.
+
+Users can also set their own Wisp server in Proxy Preferences.
 
 If you wish to use a custom HTTP/HTTPS/SOCKS5 proxy to route traffic for Scramjet this is handled on the server in `./src/server/wisp.ts`.
 
