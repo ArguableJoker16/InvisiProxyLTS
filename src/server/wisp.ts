@@ -1,5 +1,6 @@
+import type { IncomingMessage } from 'node:http';
 import type { wispurrOptions } from 'wispurr';
-import { serverUrl } from '../config.ts';
+import { config, serverUrl } from '../config.ts';
 import { getAltPrefix } from '../obfuscation/paths.ts';
 
 export const wispPath = () => getAltPrefix('wisp', serverUrl.pathname);
@@ -12,8 +13,22 @@ export const wispProxies = {
 } as const;
 export type WispRegion = keyof typeof wispProxies;
 
+export const wispRegions = (Object.keys(wispProxies) as WispRegion[]).filter(
+	(region) => region !== 'patreon' || config.patreon === true
+);
+
 const isRegion = (name: string): name is WispRegion =>
-	Object.hasOwn(wispProxies, name);
+	(wispRegions as string[]).includes(name);
+
+export function fromOwnSite(req: IncomingMessage): boolean {
+	const { origin, host } = req.headers;
+	if (!origin) return true;
+	try {
+		return new URL(origin).hostname === new URL(`http://${host}`).hostname;
+	} catch {
+		return false;
+	}
+}
 
 export function wispRegion(url: string | null | undefined): string | null {
 	const path = (url ?? '').split(/[?#]/, 1)[0];

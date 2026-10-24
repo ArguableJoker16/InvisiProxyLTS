@@ -21,6 +21,33 @@ export function SettingToggle(props: {
 	);
 }
 
+export function AddressField(props: {
+	id: string;
+	formId: string;
+	label: string;
+	description: string;
+	placeholder: string;
+	invalid: string;
+}) {
+	return (
+		<div class="setting-field">
+			<label for={props.id}>{props.label}</label>
+			<span class="setting-description">{props.description}</span>
+			<form id={props.formId} class="cloakform address-form">
+				<input
+					id={props.id}
+					type="text"
+					placeholder={props.placeholder}
+					spellcheck="false"
+					autocomplete="off"
+					data-invalid={props.invalid}
+				/>
+				<input type="submit" value={translate('settings.tab.apply')} />
+			</form>
+		</div>
+	);
+}
+
 export function TransportSelect(props: { id: string; containerId: string }) {
 	return (
 		<div id={props.containerId} class="transport-setting setting-field">

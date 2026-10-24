@@ -91,6 +91,12 @@ function redirect(res: ServerResponse, location: string) {
 	reply(res, 302);
 }
 
+function clearSiteData(res: ServerResponse) {
+	res.setHeader('Clear-Site-Data', '"cache", "storage"');
+	res.setHeader('Cache-Control', 'no-store');
+	reply(res, 200);
+}
+
 function disguiseCheck(
 	pages: Record<string, string>,
 	externalPages: ExternalPages
@@ -181,6 +187,7 @@ export function createSiteHandler({
 	const baseRoute = trimSlash(base);
 	const development = isDevelopment();
 	const dispenserPath = `${base}api/link`;
+	const clearDataPath = `${base}api/clear`;
 	const dispense = createLinkDispenser(undefined, clientIp);
 	const wispRoute = trimSlash(wispPath());
 	const checkDisguise = disguiseCheck(pages, externalPages);
@@ -344,6 +351,12 @@ export function createSiteHandler({
 
 		if (req.method === 'POST' && path === dispenserPath)
 			return void dispense(req, res);
+		if (
+			req.method === 'POST' &&
+			path === clearDataPath &&
+			req.headers['sec-fetch-site'] === 'same-origin'
+		)
+			return clearSiteData(res);
 
 		if (path !== baseRoute && !path.startsWith(base))
 			return reply(res, 404, 'text/plain', 'Not Found');

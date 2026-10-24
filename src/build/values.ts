@@ -69,6 +69,7 @@ export const buildValues: SiteValues = {
 	errors: {},
 	locale: locales[0].code,
 	locales: locales.map(({ code, name }) => ({ code, name })),
+	patreon: config.patreon === true,
 	readAsset,
 };
 

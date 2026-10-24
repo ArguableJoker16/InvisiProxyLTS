@@ -1,5 +1,9 @@
-import { route, translate, Translation } from '../document-helpers.tsx';
-import { SettingToggle, TransportSelect } from './SettingsControls.tsx';
+import { route, translate, Translation, values } from '../document-helpers.tsx';
+import {
+	AddressField,
+	SettingToggle,
+	TransportSelect,
+} from './SettingsControls.tsx';
 
 const links = {
 	patreon: (text: string) => (
@@ -59,7 +63,9 @@ export default function ProxySettings() {
 										'settings.advanced.regions.japan'
 									)}
 								</option>
-								<option value="patreon">Patreon</option>
+								{values.patreon && (
+									<option value="patreon">Patreon</option>
+								)}
 							</select>
 						</div>
 						<SettingToggle
@@ -68,6 +74,13 @@ export default function ProxySettings() {
 								'settings.advanced.torDescription'
 							)}
 							class="useonion"
+						/>
+						<SettingToggle
+							label={translate('settings.privacy.blockWebrtc')}
+							description={translate(
+								'settings.privacy.blockWebrtcDescription'
+							)}
+							class="block-webrtc"
 						/>
 						<SettingToggle
 							label={translate('proxySettings.searchNavFix')}
@@ -98,6 +111,16 @@ export default function ProxySettings() {
 									'proxySettings.hideHistoryDescription'
 								)}
 								class="history-toggle"
+							/>
+							<AddressField
+								id="custom-wisp"
+								formId="wispform"
+								label={translate('proxySettings.customWisp')}
+								description={translate(
+									'proxySettings.customWispDescription'
+								)}
+								placeholder="wss://wisp.example.com/"
+								invalid={translate('proxySettings.invalidWisp')}
 							/>
 						</div>
 						<button

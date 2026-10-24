@@ -7,6 +7,7 @@ export const externalPages: ExternalPages = {
 		default: 'https://github.com/InvisiProxy/InvisiProxyLTS',
 		aos: 'https://github.com/michalsnik/aos',
 		solidjs: 'https://github.com/solidjs/solid',
+		vite: 'https://github.com/vitejs/vite',
 		merp: 'https://github.com/sylvieisnton/merp',
 		libcurl: 'https://github.com/MercuryWorkshop/libcurl-transport',
 		epoxy: 'https://github.com/MercuryWorkshop/epoxy-transport',

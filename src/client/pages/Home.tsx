@@ -224,6 +224,13 @@ export default function Home() {
 								<div class="dependencylogo">
 									<img
 										loading="lazy"
+										src={route('/assets/img/vite.webp')}
+										alt="Vite"
+									/>
+								</div>
+								<div class="dependencylogo">
+									<img
+										loading="lazy"
 										src={route('/assets/img/solid.webp')}
 										alt="SolidJS"
 									/>
@@ -258,6 +265,13 @@ export default function Home() {
 										loading="lazy"
 										src={route('/assets/img/scramjet.png')}
 										alt="Scramjet"
+									/>
+								</div>
+								<div class="dependencylogo">
+									<img
+										loading="lazy"
+										src={route('/assets/img/vite.webp')}
+										alt="Vite"
 									/>
 								</div>
 								<div class="dependencylogo">

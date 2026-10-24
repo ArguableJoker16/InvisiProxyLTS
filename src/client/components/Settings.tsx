@@ -129,7 +129,9 @@ export default function Settings() {
 								<option value="jp">
 									{translate('settings.advanced.regions.japan')}
 								</option>
-								<option value="patreon">Patreon</option>
+								{values.patreon && (
+									<option value="patreon">Patreon</option>
+								)}
 							</select>
 						</div>
 						<div class="setting-field">
@@ -234,6 +236,29 @@ export default function Settings() {
 							)}
 							class="sandbox"
 						/>
+						<label class="setting-row">
+							<span class="setting-copy">
+								<span class="setting-label">
+									{translate('settings.privacy.clearData')}
+								</span>
+								<span class="setting-description">
+									{translate(
+										'settings.privacy.clearDataDescription'
+									)}
+								</span>
+							</span>
+							<input
+								type="button"
+								id="clear-site-data"
+								class="clear-data-button"
+								value={translate(
+									'settings.privacy.clearDataButton'
+								)}
+								data-confirm={translate(
+									'settings.privacy.clearDataConfirm'
+								)}
+							/>
+						</label>
 					</section>
 				</div>
 			</div>

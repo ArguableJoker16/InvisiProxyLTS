@@ -38,13 +38,20 @@ const vendorDirs: [prefix: string, dir: string, files: string[]][] = [
 	],
 ];
 
-export const faqSearch: SiteFile = {
-	source: join(projectDir, 'src/client/faq-search.tsx'),
+const clientScript = (name: string): SiteFile => ({
+	source: join(projectDir, `src/client/${name}.tsx`),
 	get target() {
-		return `assets/js/${getPathAliases()['files/faq-search.js'] || 'faq-search.js'}`;
+		return `assets/js/${getPathAliases()[`files/${name}.js`] || `${name}.js`}`;
 	},
 	kind: 'script',
-};
+});
+
+export const faqSearch = clientScript('faq-search');
+export const clientScripts = [
+	faqSearch,
+	clientScript('particles'),
+	clientScript('tooltips'),
+];
 
 export function siteFiles(): SiteFile[] {
 	const files: SiteFile[] = [];
@@ -108,7 +115,7 @@ export function siteFiles(): SiteFile[] {
 
 export const siteScripts = () => [
 	...siteFiles().filter((file) => file.kind === 'script'),
-	faqSearch,
+	...clientScripts,
 ];
 
 export const rootDataFiles = () =>

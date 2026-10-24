@@ -1,5 +1,6 @@
 import { values, route, maskText } from 'build:invisiproxy';
 import { isMobileBrowser, selectedTransport } from '../../../src/browser/transport.ts';
+import { customWispUrl } from '../../../src/browser/chain.ts';
 /* -----------------------------------------------
 /* Authors: Yoct, OlyB, b4kt
 /* GNU Affero General Public License v3.0: https://www.gnu.org/licenses/agpl-3.0.en.html
@@ -159,7 +160,7 @@ if (document.getElementById('csel')) {
       (
         document.getElementById(selector) || document.querySelector(selector)
       ).addEventListener(...args),
-    settingsMenu = document.getElementsByClassName('dropdown-settings')[0],
+    settingsMenu = document.getElementById('csel').closest('.dropdown-settings'),
     focusElement = settingsMenu.parentElement.querySelector("button.link-button");
 
   // TODO: Properly comment this code.
@@ -264,101 +265,6 @@ if (document.getElementById('csel')) {
         setStorage('Theme', e.target.value);
         document.documentElement.classList.toggle(e.target.value, true);
       }
-      (async () => {
-        const shouldLoad = await new Promise((resolve) => {
-          let tries = 0;
-          const load = () => {
-            if (!document.getElementById('background')) return resolve(false);
-            if ('function' === typeof self.loadFull) {
-              window.removeEventListener('load', load);
-              resolve(true);
-            } else if (tries < 5) {
-              tries++;
-              setTimeout(load, 1000);
-            }
-          };
-          if (document.readyState === 'complete') load();
-          else window.addEventListener('load', load);
-        });
-        if (!shouldLoad) return;
-        await loadFull(tsParticles);
-        const styles = getComputedStyle(document.documentElement);
-
-        await tsParticles.load({
-          id: 'background',
-          options: {
-            background: {
-              color: {
-                value: styles.getPropertyValue('--particles-bg') || '#0d1117',
-              },
-            },
-            fullScreen: {
-              enable: true,
-              zIndex: -1,
-            },
-            detectRetina: true,
-            fpsLimit: 60,
-            interactivity: {
-              events: {
-                resize: {
-                  enable: true,
-                },
-              },
-            },
-            particles: {
-              color: {
-                value: styles.getPropertyValue('--particles-color') || '#ffffff',
-              },
-              move: {
-                enable: true,
-                speed: parseFloat(styles.getPropertyValue('--particles-mv-spd')) || 0.3,
-                direction: 'none',
-                outModes: {
-                  default: 'out',
-                },
-              },
-              number: {
-                density: {
-                  enable: true,
-                  area: 800,
-                },
-                value: 100,
-              },
-              opacity: {
-                value: {
-                  min: 0.1,
-                  max: parseFloat(styles.getPropertyValue('--particles-op-max')) || 0.3,
-                },
-                animation: {
-                  enable: true,
-                  speed: parseFloat(styles.getPropertyValue('--particles-op-spd')) || 0.3,
-                  sync: false,
-                },
-              },
-              shape: {
-                type: 'circle',
-              },
-              size: {
-                value: { min: 1, max: 5 },
-                animation: {
-                  enable: true,
-                  speed: parseFloat(styles.getPropertyValue('--particles-sz-spd')) || 0.3,
-                  sync: false,
-                },
-              },
-              links: {
-                enable: true,
-                distance: 150,
-                color: styles.getPropertyValue('--particles-links') || '#ffffff',
-                opacity: parseFloat(styles.getPropertyValue('--particles-links-opacity')) || 0.4,
-                width: 1,
-              },
-            },
-            pauseOnBlur: true,
-            pauseOnOutsideViewport: true,
-          },
-        });
-      })();
     }
   });
 
@@ -372,7 +278,9 @@ if (document.getElementById('csel')) {
     }
   };
 
-  attachEventListener('.close-settings-btn', 'click', closeSettings);
+  settingsMenu
+    .querySelector('.close-settings-btn')
+    .addEventListener('click', closeSettings);
 
   settingsMenu.addEventListener('click', (event) => {
     if (!event.target.closest('.settings-content')) {
@@ -435,6 +343,43 @@ if (document.getElementById('csel')) {
       removeStorage('Sandbox');
     }
     if (e.isTrusted) location.reload();
+  });
+
+  attachClassEventListener('block-webrtc', 'change', (e) => {
+    if (checkBooleanState(e.target) === true) setStorage('BlockWebRTC', true);
+    else removeStorage('BlockWebRTC');
+    if (e.isTrusted) location.reload();
+  });
+
+  const attachAddressForm = (formId, key, normalize) => {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    const input = form.querySelector('input[type=text]');
+    input.addEventListener('input', () => input.setCustomValidity(''));
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const value = input.value.trim();
+      if (!value) removeStorage(key);
+      else {
+        const address = normalize(value);
+        if (!address) {
+          input.setCustomValidity(input.dataset.invalid);
+          input.reportValidity();
+          return;
+        }
+        setStorage(key, address);
+      }
+      location.reload();
+    });
+  };
+  attachAddressForm('wispform', 'CustomWisp', customWispUrl);
+
+  attachEventListener('clear-site-data', 'click', async (e) => {
+    if (!confirm(e.currentTarget.dataset.confirm)) return;
+    try {
+      await fetch(route('/api/clear'), { method: 'POST' });
+    } catch {}
+    location.href = route('/');
   });
 
   attachClassEventListener('cloak-type-list', 'change', (e) => {
@@ -630,6 +575,16 @@ useStorageArgs('Sandbox', (s) => {
   if (s === true) {
     classUpdateHandler(document.getElementsByClassName('sandbox'), 'on')();
   }
+});
+
+useStorageArgs('CustomWisp', (s) => {
+  const input = document.getElementById('custom-wisp');
+  if (input && typeof s === 'string') input.value = s;
+});
+
+useStorageArgs('BlockWebRTC', (s) => {
+  if (s === true)
+    classUpdateHandler(document.getElementsByClassName('block-webrtc'), 'on')();
 });
 
 useStorageArgs('LaunchType', (s) => {

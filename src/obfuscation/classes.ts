@@ -150,7 +150,6 @@ export function rewriteClassReferences(
 						'querySelectorAll',
 						'closest',
 						'matches',
-						'tippy',
 					].includes(method)
 				) {
 					argument(node.arguments[0], 'selector');

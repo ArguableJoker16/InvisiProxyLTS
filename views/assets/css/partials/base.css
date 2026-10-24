@@ -17,6 +17,16 @@ body {
 	background-color: var(--nord0);
 }
 
+body:has(> #footer) {
+	display: flex;
+	flex-direction: column;
+	min-height: 100dvh;
+}
+
+body:has(> #footer) > #footer {
+	margin-top: auto;
+}
+
 canvas {
 	background-color: var(--nord0);
 }

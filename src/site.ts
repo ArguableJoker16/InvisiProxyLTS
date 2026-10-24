@@ -20,6 +20,7 @@ export interface SiteValues {
 	errors: Record<string, { beforeScript: string; afterScript: string }>;
 	locale: string;
 	locales: { code: string; name: string }[];
+	patreon: boolean;
 	pageNames?: string[];
 	messages?: Messages;
 	fallbackMessages?: Messages;
@@ -228,10 +229,22 @@ export const credits = Object.freeze<CreditSection[]>([
 		id: 'contributors',
 		people: [
 			{
+				name: 'b4kt',
+				contributions: 'The Freedom Project (Former Hard Fork), Scramjet-Utils Plugin (Search Guard), Hidden History',
+				url: 'https://discord.gg/jMm65ktMCz',
+				contact: '@b4kt',
+			},
+			{
 				name: 'MUATEX',
 				contributions: 'Designer for Logo/Branding',
 				url: 'https://www.muatex.com',
 				contact: '@muatex',
+			},
+			{
+				name: 'Toast',
+				contributions: 'Scramjet-Utils Plugin (Custom Error Page)',
+				url: 'https://github.com/havi11368',
+				contact: '@havi11368',
 			},
 			{
 				name: 'Kinglalu',
@@ -262,12 +275,6 @@ export const credits = Object.freeze<CreditSection[]>([
 				name: 'greiyn NOT H',
 				contributions: 'Bug Hunter, Translations',
 				contact: '@greiyn',
-			},
-			{
-				name: 'b4kt',
-				contributions: 'The Freedom Project (Former Hard Fork)',
-				url: 'https://discord.gg/jMm65ktMCz',
-				contact: '@b4kt',
 			},
 		],
 	},

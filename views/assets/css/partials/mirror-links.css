@@ -2,8 +2,13 @@
 	margin-left: 25px;
 }
 
+.navbar > .donate-nav {
+	margin-left: 10px;
+}
+
 .mirror-links-toggle,
-.omnibar .mirror-links-toggle {
+.omnibar .mirror-links-toggle,
+.donate-nav > .donate-link {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -18,8 +23,17 @@
 }
 
 .mirror-links-toggle:hover,
-.omnibar .mirror-links-toggle:hover {
+.omnibar .mirror-links-toggle:hover,
+.donate-nav > .donate-link:hover {
 	background: color-mix(in srgb, var(--nord11) 24%, transparent);
+}
+
+.donate-nav > .donate-link {
+	box-sizing: border-box;
+	width: 42px;
+	padding: 0;
+	font-size: 18px;
+	text-decoration: none;
 }
 
 .mirror-links-menu {
@@ -98,6 +112,7 @@
 }
 
 .mirror-links-toggle:focus-visible,
+.donate-nav > .donate-link:focus-visible,
 .mirror-links-menu :is(button, a):focus-visible,
 .mirror-links-inline:focus-visible {
 	outline: 2px solid var(--nord8);

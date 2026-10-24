@@ -1,5 +1,6 @@
 import { values, route, maskText } from 'build:invisiproxy';
 import { BareCompatibleClient } from '@mercuryworkshop/proxy-transports';
+import { proxiedFrameUrl } from '../../../src/browser/frame-url.ts';
 /* -----------------------------------------------
 /* Authors: QuiteAFancyEmerald, Yoct, b4kt, and OlyB
 /* GNU Affero General Public License v3.0: https://www.gnu.org/licenses/agpl-3.0.en.html
@@ -15,6 +16,7 @@ import { BareCompatibleClient } from '@mercuryworkshop/proxy-transports';
 // To be defined after the document has fully loaded.
 let sjBundle = null;
 const FRAME_URL_KEY = `${values.storageNamespace}-frame-url`;
+const OPEN_URL_KEY = `${values.storageNamespace}-open-url`;
 const SJ_PREFIX_TAG = 'sj:';
 
 // Get the preferred apex domain name. Not exactly apex, as any
@@ -24,19 +26,16 @@ const getDomain = () =>
   // This is used for stealth mode when visiting external sites.
   goFrame = (url) => {
     localStorage.setItem(FRAME_URL_KEY, url);
-    if (location.pathname !== route("/s"))
+    if (location.pathname !== route("/s")) {
+      localStorage.setItem(OPEN_URL_KEY, url);
       location.href = route("/s") + (values.development ? '' : `?cache=${values.cacheKey}`);
-    else navigateLocalFrame(url);
+    } else navigateLocalFrame(url);
   },
   navigateLocalFrame = (target) => {
     const windowFrame = document.getElementById('frame');
-    if (!windowFrame || !target) return;
+    const rawUrl = proxiedFrameUrl(target);
+    if (!windowFrame || !rawUrl) return;
     document.getElementsByClassName('loader')[0]?.classList.add('loader-active');
-    if (!target.startsWith(SJ_PREFIX_TAG)) {
-      windowFrame.src = target;
-      return;
-    }
-    const rawUrl = target.slice(SJ_PREFIX_TAG.length);
     const tryGo = () => {
       const f = sjBundle && sjBundle.frame;
       if (f && typeof f.go === 'function') f.go(rawUrl);
@@ -587,21 +586,6 @@ const preparePage = async () => {
   prSet('pr-sj', 'scramjet');
   prSet('pr-trl', 'tru');
 
-  // Load the frame for stealth mode if it exists.
-  const windowFrame = document.getElementById('frame');
-  if (windowFrame) {
-    const sjReady = sjBundle?.ready
-      ? Promise.resolve()
-      : new Promise((resolve) =>
-          window.addEventListener('s-ready', resolve, {
-            once: true,
-          })
-        );
-    await sjReady;
-    const target = localStorage.getItem(FRAME_URL_KEY);
-    if (target) navigateLocalFrame(target);
-  }
-
   const useModule = (moduleFunc, tries = 0) => {
     try {
       moduleFunc();
@@ -612,23 +596,6 @@ const preparePage = async () => {
         }, 600);
     }
   };
-
-  if (document.getElementsByClassName('tippy-button').length >= 0)
-    useModule(() => {
-      tippy('.tippy-button', {
-        delay: 50,
-        animateFill: true,
-        placement: 'bottom',
-      });
-    });
-  if (document.getElementsByClassName('pr-tippy').length >= 0)
-    useModule(() => {
-      tippy('.pr-tippy', {
-        delay: 50,
-        animateFill: true,
-        placement: 'bottom',
-      });
-    });
 
   if (document.querySelector('[data-aos]')) {
     useModule(() => {

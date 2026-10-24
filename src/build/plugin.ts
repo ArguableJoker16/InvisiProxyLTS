@@ -39,7 +39,13 @@ import {
 	renderSite,
 } from './render.ts';
 import { builtLocales, loadLocales, localizeSitemap } from './locales.ts';
-import { faqSearch, type SiteFile, siteFiles, siteScripts } from './sources.ts';
+import {
+	clientScripts,
+	faqSearch,
+	type SiteFile,
+	siteFiles,
+	siteScripts,
+} from './sources.ts';
 import { buildValues, readFromStaging } from './values.ts';
 
 export const scriptEnvironment = (index: number) => `script_${index}`;
@@ -109,7 +115,7 @@ function environments(): Record<string, EnvironmentOptions> {
 					outDir: join(outDir, dirname(script.target)),
 					watch,
 					minify: config.minifyScripts,
-					target: 'esnext',
+					target: clientScripts.includes(script) ? 'es2021' : 'esnext',
 					lib: {
 						entry: script.source,
 						formats: ['iife'],
@@ -118,7 +124,7 @@ function environments(): Record<string, EnvironmentOptions> {
 						fileName: () => basename(script.target),
 					},
 					rolldownOptions:
-						script === faqSearch
+						clientScripts.includes(script)
 							? {}
 							: {
 									treeshake: false,

@@ -58,7 +58,14 @@ export function getPathAliases(): Record<string, string> {
 	)
 		.filter((file) => extname(file) && !file.endsWith('.map'))
 		.map((file) => basename(file).replace(/\.ts$/, '.js'));
-	files.push('sw.js', 'sw-blacklist.js', 'faq-search.js', 'splash.json');
+	files.push(
+		'sw.js',
+		'sw-blacklist.js',
+		'faq-search.js',
+		'particles.js',
+		'tooltips.js',
+		'splash.json'
+	);
 	for (const file of files) keys.add(`files/${file}`);
 	const names = generatedNames(keys, 'paths');
 	state.aliases = Object.fromEntries(

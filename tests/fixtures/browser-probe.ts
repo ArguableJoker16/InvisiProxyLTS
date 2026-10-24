@@ -26,16 +26,27 @@ const base = origin + serverUrl.pathname;
 const route = (file: string) =>
 	base + Object.keys(pages).find((key) => pages[key] === file);
 
-const target = createServer((_req, res) => {
+const webrtcPage = `<!doctype html><body><script>
+	const frame = document.body.appendChild(document.createElement('iframe'));
+	document.documentElement.dataset.webrtc = JSON.stringify({
+		page: typeof RTCPeerConnection,
+		frame: typeof frame.contentWindow.RTCPeerConnection,
+	});
+</script></body>`;
+
+const target = createServer((req, res) => {
 	res.setHeader('content-type', 'text/html');
 	res.end(
-		'<!doctype html><h1>Proxied through Wisp</h1><script>document.documentElement.dataset.proxySmoke = "executed";</script>'
+		req.url?.startsWith('/webrtc')
+			? webrtcPage
+			: '<!doctype html><h1>Proxied through Wisp</h1><script>document.documentElement.dataset.proxySmoke = "executed";</script>'
 	);
 });
 const targetPort = Number(process.env.INVISIPROXY_TARGET_PORT);
 await new Promise<void>((resolve) =>
 	target.listen(targetPort, '127.0.0.1', resolve)
 );
+
 const browser = await chromium.launch({ args: ['--no-sandbox'] });
 
 try {
@@ -51,9 +62,6 @@ try {
 	await context.addInitScript(() =>
 		Object.assign(window, {
 			AOS: { init() {}, refresh() {} },
-			tippy: () => [],
-			loadFull: async () => {},
-			tsParticles: { load: async () => ({ destroy() {} }) },
 		})
 	);
 	const page = await context.newPage();
@@ -155,6 +163,48 @@ try {
 				);
 			});
 	}
+
+	await page.locator('#search-input').fill('http://127.0.0.1:9/unreachable');
+	await page.locator('#search-input').press('Enter');
+	const errorPage = page.frameLocator('#frame');
+	await errorPage
+		.locator('#fetchedURL', { hasText: 'http://127.0.0.1:9/unreachable' })
+		.waitFor();
+	assert.match(await errorPage.locator('#errorTrace').inputValue(), /\S/);
+	assert.match(
+		(await errorPage.locator('#scramjetVersion').textContent()) ?? '',
+		/^v\d\S* - build \w+$/
+	);
+
+	const webrtcResult = async () =>
+		JSON.parse(
+			(await page
+				.frameLocator('#frame')
+				.locator('html[data-webrtc]')
+				.getAttribute('data-webrtc')) ?? '{}'
+		);
+	const openWebrtcPage = async () => {
+		await page
+			.locator('#search-input')
+			.fill(`http://127.0.0.1:${targetPort}/webrtc`);
+		await page.locator('#search-input').press('Enter');
+		return webrtcResult();
+	};
+	assert.deepEqual(await openWebrtcPage(), {
+		page: 'function',
+		frame: 'function',
+	});
+
+	await page.goto(route('pages/proxnav/scramjet.html'));
+	await page.waitForFunction(() => window.$invisiScramjet?.ready === true);
+	await page.locator(`input${cls('block-webrtc')}`).evaluate((input) => {
+		(input as HTMLInputElement).checked = true;
+		input.dispatchEvent(new Event('change', { bubbles: true }));
+	});
+	assert.deepEqual(await openWebrtcPage(), {
+		page: 'undefined',
+		frame: 'undefined',
+	});
 
 	await page.goto(base);
 	await page.locator(cls('settings-toggle')).first().click();

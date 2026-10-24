@@ -104,6 +104,21 @@ try {
 			.statusCode,
 		429
 	);
+
+	const clear = (site: string) =>
+		app.inject({
+			method: 'POST',
+			url: `${base}api/clear`,
+			headers: { 'sec-fetch-site': site },
+		});
+	assert.equal(
+		(await clear('same-origin')).headers['clear-site-data'],
+		'"cache", "storage"'
+	);
+	assert.equal(
+		(await clear('cross-site')).headers['clear-site-data'],
+		undefined
+	);
 } finally {
 	await app.close();
 }
