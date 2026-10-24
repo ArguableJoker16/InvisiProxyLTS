@@ -50,7 +50,7 @@
 	background: var(--settings-bg, var(--nord0));
 	color: var(--html-color, var(--nord4));
 	box-shadow: 0 16px 48px rgb(0 0 0 / 30%);
-	font-family: "Rethink Sans", sans-serif;
+	font-family: "Rethink Sans", "Rethink Sans Fallback", sans-serif;
 	text-align: left;
 }
 

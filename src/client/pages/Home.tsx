@@ -10,7 +10,11 @@ import {
 	languageTag,
 } from '../document-helpers.tsx';
 import { Show } from 'solid-js';
-import { ParticlesScript, PageScripts } from '../components/HeadScripts.tsx';
+import {
+	AosScripts,
+	ParticlesScript,
+	PageScripts,
+} from '../components/HeadScripts.tsx';
 import HeadContent from '../components/HeadContent.tsx';
 import AntiExfil from '../components/AntiExfil.tsx';
 import Header from '../components/Header.tsx';
@@ -633,12 +637,7 @@ export function Head() {
 			</SEO>
 			<HeadContent />
 			<ParticlesScript />
-			<script
-				src="https://unpkg.com/aos@next/dist/aos.js"
-				defer={true}
-				data-module=""
-				innerHTML=""
-			/>
+			<AosScripts />
 			<PageScripts />
 			<link
 				rel="mask-icon"
@@ -646,10 +645,6 @@ export function Head() {
 				color="#b4213b"
 			/>
 			<link rel="manifest" href={route('manifest.json')} />
-			<link
-				rel="stylesheet"
-				href="https://unpkg.com/aos@next/dist/aos.css"
-			/>
 			<meta name="mobile-web-app-capable" content="yes" />
 			<SEO>
 				<script

@@ -7,7 +7,7 @@
 	padding: 10px 12px;
 	color: var(--html-color, white);
 	background-color: var(--mac-title-bg, var(--dark2));
-	font-family: "Montserrat Alternates", sans-serif;
+	font-family: "Montserrat Alternates", "Montserrat Alternates Fallback", sans-serif;
 	font-size: 20px;
 }
 

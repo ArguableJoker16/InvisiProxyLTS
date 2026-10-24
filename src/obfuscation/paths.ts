@@ -64,6 +64,7 @@ export function getPathAliases(): Record<string, string> {
 		'faq-search.js',
 		'particles.js',
 		'tooltips.js',
+		'aos.js',
 		'splash.json'
 	);
 	for (const file of files) keys.add(`files/${file}`);

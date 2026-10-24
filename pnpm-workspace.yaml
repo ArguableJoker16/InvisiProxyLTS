@@ -16,3 +16,9 @@ allowBuilds:
   esbuild: true
   utf-8-validate: true
   '@tsparticles/engine': false
+  '@fortawesome/fontawesome-free': false
+
+updateConfig:
+  ignoreDependencies:
+    - '@fortawesome/fontawesome-free'
+    - aos

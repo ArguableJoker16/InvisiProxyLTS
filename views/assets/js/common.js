@@ -1,4 +1,4 @@
-import { values, route, maskText } from 'build:invisiproxy';
+import { values, route } from 'build:invisiproxy';
 import { BareCompatibleClient } from '@mercuryworkshop/proxy-transports';
 import { proxiedFrameUrl } from '../../../src/browser/frame-url.ts';
 /* -----------------------------------------------
@@ -19,12 +19,8 @@ const FRAME_URL_KEY = `${values.storageNamespace}-frame-url`;
 const OPEN_URL_KEY = `${values.storageNamespace}-open-url`;
 const SJ_PREFIX_TAG = 'sj:';
 
-// Get the preferred apex domain name. Not exactly apex, as any
-// subdomain other than those listed will be ignored.
-const getDomain = () =>
-    location.host.replace(/^(?:www|beta)\./, ''),
-  // This is used for stealth mode when visiting external sites.
-  goFrame = (url) => {
+// This is used for stealth mode when visiting external sites.
+const goFrame = (url) => {
     localStorage.setItem(FRAME_URL_KEY, url);
     if (location.pathname !== route("/s")) {
       localStorage.setItem(OPEN_URL_KEY, url);
@@ -48,30 +44,14 @@ const getDomain = () =>
    * See the goProx object at the bottom for some usage examples
    * on the URL handlers, omnibox functions, and the sjUrl function.
    */
-  urlHandler = (parser) =>
-    typeof parser === 'function'
-      ? // Return different functions based on whether a URL has already been set.
-        // Should help avoid confusion when using or adding to the goProx object.
-        (url, mode) => {
-          if (!url) return;
-          if (parser === sjUrl) mode = 'stealth';
-          url = parser(url);
-          mode = `${mode}`.toLowerCase();
-          if (mode === 'stealth' || mode == 1) goFrame(url);
-          else if (mode === 'window' || mode == 0) location.href = url;
-          else return url;
-        }
-      : (mode) => {
-          mode = `${mode}`.toLowerCase();
-          if (mode === 'stealth' || mode == 1) goFrame(parser);
-          else if (mode === 'window' || mode == 0) location.href = parser;
-          else return parser;
-        },
-  sjPreset = (rawUrl) => (mode) => {
+  urlHandler = (parser) => (url, mode) => {
+    if (!url) return;
+    if (parser === sjUrl) mode = 'stealth';
+    url = parser(url);
     mode = `${mode}`.toLowerCase();
-    if (mode === 'window' || mode == 0 || mode === 'stealth' || mode == 1)
-      goFrame(sjUrl(rawUrl));
-    else return sjUrl(rawUrl);
+    if (mode === 'stealth' || mode == 1) goFrame(url);
+    else if (mode === 'window' || mode == 0) location.href = url;
+    else return url;
   },
   openBlankCloak = () => {
       try {
@@ -112,15 +92,6 @@ const getDomain = () =>
       console.error('Blob cloaking failed:', e);
       return null;
     }
-  },
-  // An asynchronous version of the function above, just in case.
-  asyncUrlHandler = (parser) => async (url, mode) => {
-    if (!url) return;
-    if (typeof parser === 'function') url = await parser(url);
-    mode = `${mode}`.toLowerCase();
-    if (mode === 'stealth' || mode == 1) goFrame(url);
-    else if (mode === 'window' || mode == 0) location.href = url;
-    else return url;
   };
 
 /* READ SETTINGS */
@@ -178,13 +149,7 @@ const searchEngines = Object.freeze({
 
 // Get the autocomplete results for a given search query in JSON format.
 let activeACController = null;
-const requestAC = async (
-  baseUrl,
-  query,
-  parserFunc = (url) => url,
-  params = {}
-) => {
-  if (parserFunc !== sjUrl) return;
+const requestAC = async (baseUrl, query, params = {}) => {
   if (!sjBundle?.ready || !sjBundle.frame) return;
 
   const transport =
@@ -318,32 +283,7 @@ const getSearchTemplate = (
   },
   sjUrl = (url) => SJ_PREFIX_TAG + search(url)
 
-/* To use:
- * goProx.proxy(url-string, mode-as-string-or-number);
- *
- * Key: 1 = "stealth"
- *      0 = "window"
- *      Nothing = return URL as a string
- *
- * Examples:
- * Stealth mode -
- * goProx.scramjet("https://google.com", 1);
- * goProx.scramjet("https://google.com", "stealth");
- *
- * goProx.searx(1);
- * goProx.searx("stealth");
- *
- * Window mode -
- * goProx.scramjet("https://google.com", "window");
- *
- * goProx.searx("window");
- *
- * Return string value mode (default) -
- * goProx.scramjet("https://google.com");
- *
- * goProx.searx();
- */
-const preparePage = async () => {
+const preparePage = () => {
   if (window.$invisiScramjet?.ready) sjBundle = window.$invisiScramjet;
   else
     window.addEventListener(
@@ -357,53 +297,7 @@ const preparePage = async () => {
   // Object.freeze prevents goProx from accidentally being edited.
   const goProx = Object.freeze({
     scramjet: urlHandler(sjUrl),
-
-    tru: sjPreset('https://truffled.lol/g'),
-
   });
-
-  // Call a function after a given number of service workers are active.
-  // Workers are appended as additional arguments to the callback.
-  const callAfterWorkers = async (
-    urls,
-    callback,
-    afterHowMany = 1,
-    tries = 10,
-    ...params
-  ) => {
-    // For 10 tries, stop after 10 seconds of no response from workers.
-    if (tries <= 0) return console.log('Failed to recognize service workers.');
-    const workers = await Promise.all(
-      urls.map((url) => navigator.serviceWorker.getRegistration(url))
-    );
-    let newUrls = [],
-      finishedWorkers = [];
-    for (let i = 0; i < workers.length; i++) {
-      if (workers[i] && workers[i].active) {
-        afterHowMany--;
-        finishedWorkers.push(workers[i]);
-      } else newUrls.push(urls[i]);
-    }
-    if (afterHowMany <= 0) return await callback(...params, ...finishedWorkers);
-    else
-      await Promise.race([
-        navigator.serviceWorker.ready,
-        new Promise((resolve) => {
-          setTimeout(() => {
-            tries--;
-            resolve();
-          }, 1000);
-        }),
-      ]);
-    return await callAfterWorkers(
-      newUrls,
-      callback,
-      afterHowMany,
-      tries,
-      ...params,
-      ...finishedWorkers
-    );
-  };
 
   // Attach event listeners using goProx to specific app menus that need it.
   const loadAppIcon = async (image, destination) => {
@@ -474,35 +368,19 @@ const preparePage = async () => {
 
     let prUrl = formElement.querySelector('input[type=text]'),
       prAC = formElement.querySelector('#autocomplete'),
-      prGo1 = document.querySelectorAll(`#${id}.pr-go1, #${id} .pr-go1`),
       prGo2 = document.querySelectorAll(`#${id}.pr-go2, #${id} .pr-go2`);
 
-    // Handle the other menu buttons differently if there is no omnibox. Menus
-    // which lack an omnibox likely use buttons as mere links.
-    const goProxMethod = prUrl
-        ? (mode) => () => {
-            goProx[type](prUrl.value, mode);
-          }
-        : (mode) => () => {
-            goProx[type](mode);
-          },
+    const goProxMethod = (mode) => () => {
+        goProx[type](prUrl.value, mode);
+      },
       searchMode = type === 'scramjet' ? 'stealth' : 'window';
 
     if (prUrl) {
       let enableSearch = false,
         onCooldown = false;
 
-      prUrl.addEventListener('keydown', async (e) => {
+      prUrl.addEventListener('keydown', (e) => {
         if (e.code === 'Enter') goProxMethod(searchMode)();
-        // This is exclusively used for the validator script.
-        else if (e.code === 'Validator Test') {
-          const rawValue = e.target.value;
-          let resolved;
-          if (type === 'scramjet') resolved = sjUrl(rawValue);
-          else resolved = search(rawValue);
-          e.target.value = resolved == null ? '' : resolved;
-          e.target.dispatchEvent(new Event('change'));
-        }
       });
 
       if (prAC) {
@@ -529,7 +407,7 @@ const preparePage = async () => {
             let searchType = readStorage('SearchEngine');
             if (!(searchType in autocompletes)) searchType = defaultSearch;
             const requestTime = new Date().toUTCString();
-            requestAC('https://' + autocompletes[searchType], query, sjUrl, {
+            requestAC('https://' + autocompletes[searchType], query, {
               searchType: searchType,
               listElement: prAC,
               time: requestTime,
@@ -567,9 +445,6 @@ const preparePage = async () => {
       }
     }
 
-    prGo1.forEach((element) => {
-      element.addEventListener('click', goProxMethod('window'));
-    });
     prGo2.forEach((element) => {
       element.addEventListener('click', goProxMethod('stealth'));
     });
@@ -584,24 +459,6 @@ const preparePage = async () => {
   });
 
   prSet('pr-sj', 'scramjet');
-  prSet('pr-trl', 'tru');
-
-  const useModule = (moduleFunc, tries = 0) => {
-    try {
-      moduleFunc();
-    } catch (e) {
-      if (tries <= 5)
-        setTimeout(() => {
-          useModule(moduleFunc, tries + 1);
-        }, 600);
-    }
-  };
-
-  if (document.querySelector('[data-aos]')) {
-    useModule(() => {
-      AOS.init();
-    });
-  }
 
   const banner = document.getElementById('banner');
   if (banner) {
@@ -615,119 +472,21 @@ const preparePage = async () => {
     });
   }
 
-  // Load in relevant JSON files used to organize large sets of data.
-  // This first one is for links, whereas the rest are for navigation menus.
-  fetch(route("/assets/json/links.json"), {
-    mode: 'same-origin',
-  }).then((response) => {
-    response.json().then((huLinks) => {
-      for (let items = Object.entries(huLinks), i = 0; i < items.length; i++)
-        // Replace all placeholder links with the corresponding entry in huLinks.
-        (document.getElementById(items[i][0]) || {}).href = items[i][1];
-    });
-  });
+  if (window.self === window.top) {
+    const launchType = readStorage('LaunchType');
+    let newWindow = null;
 
-  const navLists = {
-    // Pair an element ID with a JSON file name. They are identical for now.
-    'par-nav': 'par-nav',
-  };
-
-  for (const [listId, filename] of Object.entries(navLists)) {
-    let navList = document.getElementById(listId);
-
-    if (navList) {
-      // List items stored in JSON format will be returned as a JS object.
-      const data = await fetch(route(`/assets/json/${filename}.json`), {
-        mode: 'same-origin',
-      }).then((response) => response.json());
-
-      // Load the JSON lists into specific HTML parent elements as groups of
-      // child elements, if the parent element is found.
-      switch (filename) {
-        case 'par-nav': {
-          const dirnames = {
-              // Set the directory of where each item of the corresponding JSON
-              // list will be retrieved from.
-              'par-nav': 'par',
-            },
-            dir = dirnames[filename],
-            // Add a little functionality for each list item when clicked on.
-            clickHandler = (parser, a) => (e) => {
-              if (e.target == a || e.target.tagName != 'A') {
-                e.preventDefault();
-                parser();
-              }
-            };
-
-          for (let i = 0; i < data.length; i++) {
-            // Load each item as an anchor tag with an image, heading,
-            // and click event listener.
-            const item = data[i],
-              a = document.createElement('a'),
-              img = document.createElement('img'),
-              title = document.createElement('h3');
-            ((desc = document.createElement('p')),
-              (credits = document.createElement('p')));
-
-            a.href = '#';
-            img.src = route(`/assets/img/${dir}/${item.img}`);
-            title.textContent = item.name;
-            desc.textContent = item.description;
-            credits.textContent = item.credits;
-
-            if (filename === 'par-nav') {
-              if (item.credits === 'truf')
-                desc.innerHTML +=
-                  `<br>${maskText("Credits: Check out the full site at ")}<a target="_blank" rel="noopener noreferrer" href="${route("/truffled")}">${maskText("truffled.lol")}</a> //${maskText(" discord.gg/vVqY36mzvj")}`;
-            }
-
-            a.appendChild(img);
-            a.appendChild(title);
-            a.appendChild(desc);
-
-            // Which function is used for the click event is determined by
-            // the corresponding location/index in the dirnames object.
-            const functionsList = [
-              // par-nav
-              item.custom && goProx[item.custom]
-                ? () => goProx[item.custom]('stealth')
-                : () => {},
-            ];
-
-            a.addEventListener(
-              'click',
-              clickHandler(
-                functionsList[Object.values(dirnames).indexOf(dir)],
-                a
-              )
-            );
-
-            navList.appendChild(a);
-          }
-          break;
-        }
-
-
-        }
-      }
+    if (launchType === 'blank') {
+      newWindow = openBlankCloak();
+    } else if (launchType === 'blob') {
+      newWindow = openBlobCloak();
     }
 
-    const isTopLevel = window.self === window.top;
-    if (isTopLevel) {
-      const launchType = readStorage('LaunchType');
-      let newWindow = null;
-
-      if (launchType === 'blank') {
-        newWindow = openBlankCloak();
-      } else if (launchType === 'blob') {
-        newWindow = openBlobCloak();
-      }
-
-      if (newWindow) {
-        window.location.replace('about:blank');
-        setTimeout(() => {
-          window.close();
-        }, 100);
+    if (newWindow) {
+      window.location.replace('about:blank');
+      setTimeout(() => {
+        window.close();
+      }, 100);
     }
   }
 };

@@ -143,7 +143,7 @@ export async function renderSite({
 	const documents = await renderDocuments(buildValues, load);
 	for (const [path, document] of Object.entries(documents)) {
 		const html = head
-			? document.replace('<head>', `<head>${head}`)
+			? document.replace(/<head>(?:<meta charset="utf-8">)?/, `$&${head}`)
 			: document;
 		files[path] = isDisguisedDocument(stripLocale(path))
 			? await gzip(html)

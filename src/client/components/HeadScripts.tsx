@@ -21,6 +21,24 @@ export function ParticlesScript() {
 	);
 }
 
+export function AosScripts() {
+	return (
+		<>
+			<Inline>
+				<link
+					rel="stylesheet"
+					href={route('assets/css/aos.css', 'inline')}
+				/>
+			</Inline>
+			<script
+				src={route('assets/js/aos.js')}
+				defer={true}
+				innerHTML=""
+			/>
+		</>
+	);
+}
+
 export function TooltipScripts() {
 	return (
 		<script

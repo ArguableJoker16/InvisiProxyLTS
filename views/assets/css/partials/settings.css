@@ -45,7 +45,7 @@
 	z-index: 6;
 	overflow-y: auto;
 	font-weight: 500;
-	font-family: "Figtree", sans-serif;
+	font-family: "Figtree", "Figtree Fallback", sans-serif;
 	display: flex;
 	flex-direction: column;
 	backdrop-filter: blur(10px);
@@ -211,7 +211,7 @@
 	padding: 10px 12px;
 	border-radius: 5px;
 	margin: 5px 0;
-	font-family: "Figtree", sans-serif;
+	font-family: "Figtree", "Figtree Fallback", sans-serif;
 	font-size: 16px;
 	background-color: var(--nord0);
 	border: var(--nord11) 1px solid;

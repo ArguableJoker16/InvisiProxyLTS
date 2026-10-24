@@ -101,7 +101,7 @@
 	border: 1px solid var(--nord1);
 	background: var(--nord0);
 	color: var(--nord4);
-	font-family: "Montserrat Alternates", sans-serif;
+	font-family: "Montserrat Alternates", "Montserrat Alternates Fallback", sans-serif;
 	font-size: 1rem;
 }
 

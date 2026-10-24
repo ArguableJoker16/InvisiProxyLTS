@@ -34,6 +34,7 @@
 	"author": "QuiteAFancyEmerald",
 	"license": "AGPL-3.0-only",
 	"dependencies": {
+		"@fortawesome/fontawesome-free": "5.15.4",
 		"@mercuryworkshop/epoxy-transport": "^3.0.2",
 		"@mercuryworkshop/libcurl-transport": "^2.0.6",
 		"@mercuryworkshop/proxy-transports": "^1.0.2",
@@ -45,6 +46,7 @@
 		"@tsparticles/interaction-particles-links": "4.4.0",
 		"@tsparticles/plugin-interactivity": "4.4.0",
 		"@tsparticles/solid": "4.4.0",
+		"aos": "3.0.0-beta.6",
 		"merp-obfuscator": "^0.1.1",
 		"parse5": "^8.0.1",
 		"send": "^1.2.1",
@@ -58,6 +60,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.6.2",
+		"@types/aos": "^3.0.8",
 		"@types/html-minifier-terser": "^7.0.2",
 		"@types/node": "^24.19.2",
 		"@types/send": "^1.2.1",
