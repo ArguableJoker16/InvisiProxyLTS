@@ -336,6 +336,17 @@ if (document.getElementById('csel')) {
     else removeStorage('SearchNavFix');
   });
 
+  attachClassEventListener('experimental-site-fixes', 'change', (e) => {
+    if (checkBooleanState(e.target) === true) {
+      setStorage('ExperimentalSiteFixes', true);
+      setCookie('ExperimentalSiteFixes', 'true');
+    } else {
+      removeStorage('ExperimentalSiteFixes');
+      removeCookie('ExperimentalSiteFixes');
+    }
+    if (e.isTrusted) location.reload();
+  });
+
   attachClassEventListener('sandbox', 'change', (e) => {
     if (checkBooleanState(e.target) === true) {
       setStorage('Sandbox', true);
@@ -569,6 +580,16 @@ useStorageArgs('UseAC', (s) => {
 useStorageArgs('SearchNavFix', (s) => {
   if (s === true)
     classUpdateHandler(document.getElementsByClassName('search-nav-fix'), 'on')();
+});
+
+useStorageArgs('ExperimentalSiteFixes', (s) => {
+  if (s === true) {
+    classUpdateHandler(
+      document.getElementsByClassName('experimental-site-fixes'),
+      'on'
+    )();
+    setCookie('ExperimentalSiteFixes', 'true');
+  } else removeCookie('ExperimentalSiteFixes');
 });
 
 useStorageArgs('Sandbox', (s) => {

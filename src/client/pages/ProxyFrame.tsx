@@ -53,6 +53,11 @@ export default function ProxyFrame() {
 			<Keywords />
 			<AntiExfil />
 			<div class="loader loader-active">
+				<img
+					class="pr-logo"
+					src={route('/assets/img/hero.webp')}
+					alt="Scramjet"
+				/>
 				<p class="loader-text">{translate('frame.loading')}</p>
 				<div class="loader-w"></div>
 			</div>

@@ -89,6 +89,15 @@ export default function ProxySettings() {
 							)}
 							class="search-nav-fix"
 						/>
+						<SettingToggle
+							label={translate(
+								'proxySettings.experimentalSiteFixes'
+							)}
+							description={translate(
+								'proxySettings.experimentalSiteFixesDescription'
+							)}
+							class="experimental-site-fixes"
+						/>
 					</div>
 					<div class="proxy-settings-grid-right">
 						<div class="settings-card">
@@ -112,6 +121,18 @@ export default function ProxySettings() {
 								)}
 								class="history-toggle"
 							/>
+							<div class="setting-field">
+								<label for="settings-window">
+									{translate('settings.advanced.window')}
+								</label>
+								<select id="settings-window" class="cloak-type-list">
+									<option value="none" selected>
+										{translate('settings.advanced.windowDefault')}
+									</option>
+									<option value="blank">about:blank</option>
+									<option value="blob">blob</option>
+								</select>
+							</div>
 							<AddressField
 								id="custom-wisp"
 								formId="wispform"

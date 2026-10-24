@@ -141,8 +141,10 @@ function applyResponseHooks(
 	development: boolean
 ) {
 	for (const [name, value] of securityHeaders) res.setHeader(name, value);
-	const historyHide = (req.headers.cookie || '')
-		.split('; ')
+	const cookies = (req.headers.cookie || '').split('; ');
+	if (cookies.includes('ExperimentalSiteFixes=true'))
+		res.setHeader('Cross-Origin-Embedder-Policy', 'credentialless');
+	const historyHide = cookies
 		.find((cookie) => cookie.startsWith('HistoryHide='))
 		?.split('=')[1];
 	const hide =

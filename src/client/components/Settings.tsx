@@ -115,6 +115,15 @@ export default function Settings() {
 							)}
 							class="useonion"
 						/>
+						<SettingToggle
+							label={translate(
+								'proxySettings.experimentalSiteFixes'
+							)}
+							description={translate(
+								'proxySettings.experimentalSiteFixesDescription'
+							)}
+							class="experimental-site-fixes"
+						/>
 						<div class="setting-field">
 							<label for="settings-region">
 								{translate('settings.advanced.region')}
@@ -235,6 +244,20 @@ export default function Settings() {
 								'settings.privacy.preventLeaksDescription'
 							)}
 							class="sandbox"
+						/>
+						<SettingToggle
+							label={translate('settings.privacy.blockWebrtc')}
+							description={translate(
+								'settings.privacy.blockWebrtcDescription'
+							)}
+							class="block-webrtc"
+						/>
+						<SettingToggle
+							label={translate('proxySettings.searchNavFix')}
+							description={translate(
+								'proxySettings.searchNavFixDescription'
+							)}
+							class="search-nav-fix"
 						/>
 						<label class="setting-row">
 							<span class="setting-copy">

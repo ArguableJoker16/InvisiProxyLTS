@@ -51,6 +51,13 @@
 	animation: rotation 1s linear infinite;
 }
 
+.loader .pr-logo {
+	width: 100%;
+	max-width: 120px;
+	height: auto;
+	margin: 0 auto 0 auto;
+}
+
 @keyframes rotation {
 	0% {
 		transform: rotate(0deg);

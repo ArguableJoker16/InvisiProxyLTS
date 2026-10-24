@@ -7,6 +7,15 @@ import {
 } from '../../../src/browser/search-url-guard.ts';
 import { leakFrame } from '../../../src/browser/leak-guard.ts';
 import { blockWebrtc } from '../../../src/browser/webrtc.ts';
+import {
+  autoSiteFixes,
+  fixFetchHandler,
+  headlessBody,
+  keepHistoryUrl,
+  obsidianSameTab,
+  scriptSafeBody,
+  stableCacheKeys,
+} from '../../../src/browser/site-fixes.ts';
 import { customWispUrl } from '../../../src/browser/chain.ts';
 import {
   errorPageScript,
@@ -26,7 +35,8 @@ import {
     readStorage = (name) => storageObject()[name];
 
   const transportName = selectedTransport(readStorage('Transport')),
-    transportUrl = route(`/${transportName}/index.mjs`);
+    transportUrl = route(`/${transportName}/index.mjs`),
+    siteFixes = readStorage('ExperimentalSiteFixes') === true;
 
   const getTransportOptions = () => {
     const selected = readStorage('UseSocks5');
@@ -150,6 +160,66 @@ import {
       }
     })();
 
+  const buildSiteFixesPlugin = () =>
+    new (class extends $scramjetController.ManagedPlugin {
+      constructor() {
+        super('experimental-site-fixes', []);
+      }
+      install(frame) {
+        super.install(frame);
+        const active = () => {
+          if (siteFixes) return true;
+          try {
+            return autoSiteFixes(
+              proxiedUrl(frame.element.contentWindow.location.href, frame.prefix)
+            );
+          } catch {
+            return false;
+          }
+        };
+        const replaceBody = (response, body) => {
+          const fixed = $scramjet.BareResponse.fromNativeResponse(
+            body instanceof Response
+              ? body
+              : new Response(body, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers,
+                })
+          );
+          fixed.url = response.url;
+          fixed.rawHeaders = response.rawHeaders;
+          return fixed;
+        };
+        fixFetchHandler(frame.fetchHandler, frame.prefix, active);
+        if (transportName === 'libcurl')
+          this.tap(frame.hooks.fetch.request, ({ request }, props) => {
+            if (request.method === 'HEAD' && active()) props.init.method = 'GET';
+          });
+        this.tap(
+          frame.hooks.fetch.preresponse,
+          ({ request, parsed }, props) => {
+            const response = props.response;
+            if (!response.body || !active()) return;
+            if (request.method === 'HEAD')
+              props.response = replaceBody(response, headlessBody(response));
+            else if (
+              ['script', 'worker', 'sharedworker'].includes(parsed.destination) &&
+              response.ok
+            )
+              props.response = replaceBody(response, scriptSafeBody(response));
+          },
+          { before: ['scramjet-http-cache'] }
+        );
+        this.tap(frame.hooks.init.post, ({ window: win, client }) => {
+          if (!active()) return;
+          keepHistoryUrl(win, client);
+          stableCacheKeys(win, client);
+          obsidianSameTab(win.localStorage, client);
+        });
+      }
+    })();
+
   const buildErrorPagePlugin = () =>
     new (class extends $scramjetController.ManagedPlugin {
       constructor() {
@@ -183,6 +253,7 @@ import {
       buildSearchUrlGuardPlugin(),
       buildLeakGuardPlugin(),
       buildBlockWebrtcPlugin(),
+      buildSiteFixesPlugin(),
     ];
     if (typeof $scramjetUtils === 'undefined') return plugins;
     plugins.push(new $scramjetUtils.HttpCachePlugin());
