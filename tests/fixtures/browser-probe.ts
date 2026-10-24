@@ -197,10 +197,13 @@ try {
 
 	await page.goto(route('pages/proxnav/scramjet.html'));
 	await page.waitForFunction(() => window.$invisiScramjet?.ready === true);
-	await page.locator(`input${cls('block-webrtc')}`).evaluate((input) => {
-		(input as HTMLInputElement).checked = true;
-		input.dispatchEvent(new Event('change', { bubbles: true }));
-	});
+	await page
+		.locator(`input${cls('block-webrtc')}`)
+		.first()
+		.evaluate((input) => {
+			(input as HTMLInputElement).checked = true;
+			input.dispatchEvent(new Event('change', { bubbles: true }));
+		});
 	assert.deepEqual(await openWebrtcPage(), {
 		page: 'undefined',
 		frame: 'undefined',
