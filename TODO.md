@@ -2,20 +2,26 @@ This will be our nonexhaustive todo list for InvisiProxy LTS v8.x.x and above. R
 
 ## Priority
 
-- [ ] Fix abnormal search handling
 - [ ] Class managling and DOM masquerading functionality to Scramjet (or stealth window) 
-- [ ] Implement multi-lang support!
 - [ ] Update Scramjet to V3
+- [ ] Finish translations
 
 #### Known Regressions
 - Bing will leak out of the respective stealth frame
 - Clean epoxy errors if unreleated to ProxyTransports
 
 ## Proxy/Site Functionality
-- [ ] Implement sandboxing techniques to prevent new tab leaks
-- [ ] Add bookmarks menu (source wise already present pretty much)
 - [ ] Add Chii + ensuring users can access devtools while browsing; or utilize Scramjet playground instead - partial
-- [ ] Allow for custom SOCK5 proxy layering (HTTP and SOCKS4 scheme as well)
+- [x] Implement multi-lang support!
+- [x] Fix abnormal search handling
+- [x] Add tabs system - done
+- [x] Add bookmarks menu - done
+- [x] Add WebRTC block feature - done
+- [x] Clean up CI tests for rewrite - done
+- [x] Implement specific site fixes via Clauda (cursed) - done
+- [x] Improve custom error page via plugin - done
+- [x] Implement plugins to prevent new tab leaks and search guard - done
+- [x] Allow for wisp servers - done
 - [x] Improve InvisiProxy Firefox support - partial
 - [x] Improve onboarding 
 - [x] Improve mobile support (fix UI bugs)
