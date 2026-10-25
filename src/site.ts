@@ -175,7 +175,7 @@ export function inlineHtml(html: string): string {
 
 export const sites = Object.freeze([
 	{ name: 'Discord', url: 'https://discord.com/app' },
-	{ name: 'ChatGPT', url: 'https://chat.openai.com/chat' },
+	{ name: 'ChatGPT', url: 'https://chatgpt.com' },
 	{ name: 'Gemini', url: 'https://gemini.google.com/app' },
 	{ name: 'Youtube', url: 'https://youtube.com', icon: 'https://www.youtube.com/img/favicon_144.png',},
 	{ name: 'Invidious', url: 'https://docs.invidious.io/instances' },
