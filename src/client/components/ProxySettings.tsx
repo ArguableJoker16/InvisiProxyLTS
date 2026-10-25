@@ -20,6 +20,7 @@ const links = {
 			{text}
 		</button>
 	),
+	faq: (text: string) => <a href={route('/questions')}>{text}</a>,
 };
 
 export default function ProxySettings() {
@@ -121,16 +122,25 @@ export default function ProxySettings() {
 								)}
 								class="history-toggle"
 							/>
+							<SettingToggle
+								label={translate(
+									'proxySettings.randomizeFingerprint'
+								)}
+								description={translate(
+									'proxySettings.randomizeFingerprintDescription'
+								)}
+								class="randomize-fingerprint"
+							/>
 							<div class="setting-field">
 								<label for="settings-window">
 									{translate('settings.advanced.window')}
 								</label>
 								<select id="settings-window" class="cloak-type-list">
-									<option value="none" selected>
+									<option value={values.cloakTypes.none} selected>
 										{translate('settings.advanced.windowDefault')}
 									</option>
-									<option value="blank">about:blank</option>
-									<option value="blob">blob</option>
+									<option value={values.cloakTypes.blank}>about:blank</option>
+									<option value={values.cloakTypes.blob}>blob</option>
 								</select>
 							</div>
 							<AddressField

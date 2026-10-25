@@ -1,4 +1,4 @@
-import { values, route } from 'build:invisiproxy';
+import { values, route, appPresets, appIcon } from 'build:invisiproxy';
 import { BareCompatibleClient } from '@mercuryworkshop/proxy-transports';
 import { proxiedFrameUrl } from '../../../src/browser/frame-url.ts';
 /* -----------------------------------------------
@@ -299,14 +299,31 @@ const preparePage = () => {
     scramjet: urlHandler(sjUrl),
   });
 
+  const iconLifetime = 7 * 24 * 60 * 60 * 1000;
+  const iconCache =
+    'caches' in window
+      ? caches.open(`${values.storageNamespace}-app-icons`).catch(() => null)
+      : Promise.resolve(null);
+  try {
+    for (const key of Object.keys(localStorage))
+      if (key.startsWith(`${values.storageNamespace}-app-icon-`)) localStorage.removeItem(key);
+  } catch {}
+
+  const showIcon = (image, blob) => {
+    const objectUrl = URL.createObjectURL(blob);
+    image.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+    image.addEventListener('error', () => URL.revokeObjectURL(objectUrl), { once: true });
+    image.src = objectUrl;
+  };
+
   // Attach event listeners using goProx to specific app menus that need it.
-  const loadAppIcon = async (image, destination) => {
-    const cacheKey = `${values.storageNamespace}-app-icon-${destination}`;
-    const cacheLifetime = 7 * 24 * 60 * 60 * 1000;
+  const loadAppIcon = async (image, destination, iconUrl) => {
+    const cacheKey = `${location.origin}/${values.storageNamespace}-icon/${encodeURIComponent(`${destination} ${iconUrl}`)}`;
+    const cache = await iconCache;
     try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey));
-      if (cached?.data?.startsWith('data:image/') && Date.now() - cached.savedAt < cacheLifetime) {
-        image.src = cached.data;
+      const cached = await cache?.match(cacheKey);
+      if (cached && Date.now() - Number(cached.headers.get('x-saved')) < iconLifetime) {
+        showIcon(image, await cached.blob());
         return;
       }
     } catch {}
@@ -329,34 +346,36 @@ const preparePage = () => {
           return null;
         }
       };
+      const pageIcon = async () => {
+        try {
+          const page = await client.fetch(siteUrl.href);
+          if (!page.ok) return null;
+          const html = new DOMParser().parseFromString(await page.text(), 'text/html');
+          const icon = html.querySelector('link[rel~="icon"][href], link[rel="apple-touch-icon"][href]');
+          if (!icon) return null;
+          const pageUrl = page.url || siteUrl.href;
+          const base = html.querySelector('base[href]');
+          return fetchIcon(new URL(icon.getAttribute('href'), base ? new URL(base.getAttribute('href'), pageUrl) : pageUrl));
+        } catch {
+          return null;
+        }
+      };
+      const parent = siteUrl.hostname.split('.').slice(-2).join('.');
 
-      let blob = await fetchIcon(new URL(image.dataset.proxyIcon || '/favicon.ico', siteUrl));
-      if (!blob) {
-        const page = await client.fetch(siteUrl.href);
-        if (!page.ok) return;
-        const html = new DOMParser().parseFromString(await page.text(), 'text/html');
-        const icon = html.querySelector('link[rel~="icon"][href], link[rel="apple-touch-icon"][href]');
-        if (!icon) return;
-        const pageUrl = page.url || siteUrl.href;
-        const base = html.querySelector('base[href]');
-        blob = await fetchIcon(new URL(icon.getAttribute('href'), base ? new URL(base.getAttribute('href'), pageUrl) : pageUrl));
-      }
+      let blob =
+        (iconUrl && (await fetchIcon(new URL(iconUrl, siteUrl)))) ||
+        (await fetchIcon(new URL('/favicon.ico', siteUrl))) ||
+        (await pageIcon());
+      if (!blob && parent !== siteUrl.hostname)
+        blob = await fetchIcon(new URL(`https://www.google.com/s2/favicons?domain=${parent}&sz=128`));
       if (!blob) return;
-      const objectUrl = URL.createObjectURL(blob);
-      image.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
-      image.addEventListener('error', () => URL.revokeObjectURL(objectUrl), { once: true });
-      image.src = objectUrl;
+      showIcon(image, blob);
 
-      // Keep small icons across visits, including before the proxy initializes.
-      if (blob.size <= 256 * 1024) {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          try {
-            localStorage.setItem(cacheKey, JSON.stringify({ data: reader.result, savedAt: Date.now() }));
-          } catch {}
-        }, { once: true });
-        reader.readAsDataURL(blob);
-      }
+      // Keep icons across visits, including before the proxy initializes.
+      if (blob.size <= 256 * 1024)
+        cache
+          ?.put(cacheKey, new Response(blob, { headers: { 'content-type': blob.type, 'x-saved': String(Date.now()) } }))
+          .catch(() => {});
     } catch (error) {
       console.warn('Unable to load application icon:', destination, error);
     }
@@ -450,13 +469,57 @@ const preparePage = () => {
     });
   };
 
-  document.querySelectorAll('[data-app-url]').forEach((button) => {
-    const destination = button.dataset.appUrl;
+  const iconSettled = (image) =>
+    !image.src || image.complete
+      ? Promise.resolve()
+      : new Promise((resolve) => {
+          image.addEventListener('load', resolve, { once: true });
+          image.addEventListener('error', resolve, { once: true });
+        });
+
+  const letterIcon = (name) =>
+    `data:image/svg+xml,${encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#d5484f"/><text x="32" y="43" font-family="sans-serif" font-size="30" font-weight="700" fill="#fff" text-anchor="middle">${
+        [...name][0]?.toUpperCase().replace(/[&<>]/g, '') || '?'
+      }</text></svg>`
+    )}`;
+
+  const appIcons = [...document.querySelectorAll('[data-app]')].map((button) => {
+    const app = appPresets[button.dataset.app];
+    if (!app) return null;
     if (button.tagName === 'BUTTON')
-      button.addEventListener('click', () => goProx.scramjet(destination, 'stealth'));
-    const image = button.querySelector('img[data-proxy-icon]');
-    if (image) loadAppIcon(image, destination);
+      button.addEventListener('click', () => goProx.scramjet(app.url, 'stealth'));
+    const image = button.querySelector('img');
+    return (
+      image &&
+      loadAppIcon(image, app.url, appIcon(app)).then(() => {
+        if (!image.src) image.src = letterIcon(app.name);
+        return iconSettled(image);
+      })
+    );
   });
+
+  const appTabs = [...document.querySelectorAll('.app-tab')];
+  appTabs.forEach((tab, index) =>
+    tab.addEventListener('click', () => {
+      appTabs.forEach((other) => {
+        other.classList.toggle('is-active', other === tab);
+        other.setAttribute('aria-selected', String(other === tab));
+      });
+      document.querySelectorAll('.app-grid [data-group]').forEach((card) => {
+        card.hidden = index > 0 && card.dataset.group !== String(index - 1);
+      });
+    })
+  );
+
+  const appsLoader = document.getElementById('apps-loader');
+  if (appsLoader) {
+    let loaderGone = false;
+    appsLoader.addEventListener('animationend', () => (loaderGone = true), { once: true });
+    Promise.allSettled(appIcons).then(() => {
+      if (!loaderGone) appsLoader.classList.add('apps-loader-done');
+    });
+  }
 
   prSet('pr-sj', 'scramjet');
 

@@ -31,6 +31,8 @@ import {
 	obfuscateVendorScript,
 	stripObfuscatedMarker,
 } from '../obfuscation/scripts.ts';
+import { maskText } from '../obfuscation/masks.ts';
+import { hideScramjetParams } from '../obfuscation/scramjet-params.ts';
 import { route } from '../site.ts';
 import { beginObfuscationBuild } from '../obfuscation/state.ts';
 import {
@@ -82,6 +84,14 @@ function rewriteAssetReferences(text: string) {
 		/(["'])(\/?assets\/[^"']+)\1/g,
 		(_match, quote, path) => `${quote}${route(path)}${quote}`
 	);
+}
+
+function maskManifest(data: Record<string, unknown>) {
+	for (const key of ['name', 'short_name', 'description']) {
+		const value = data[key];
+		if (typeof value === 'string') data[key] = maskText(value);
+	}
+	return data;
 }
 
 function readText(file: SiteFile) {
@@ -294,10 +304,12 @@ export function siteBuildPlugin(): Plugin[] {
 							: file.kind === 'json'
 								? rewriteAssetReferences(
 										JSON.stringify(
-											JSON.parse(
-												readFileSync(
-													file.source,
-													'utf8'
+											maskManifest(
+												JSON.parse(
+													readFileSync(
+														file.source,
+														'utf8'
+													)
 												)
 											)
 										)
@@ -306,7 +318,12 @@ export function siteBuildPlugin(): Plugin[] {
 					const source =
 						!config.usingSEO && file.kind === 'vendor-script'
 							? obfuscateVendorScript(
-									original.toString(),
+									basename(file.source) === 'scramjet.js'
+										? hideScramjetParams(
+												original.toString(),
+												buildValues.proxyCodecKey
+											)
+										: original.toString(),
 									file.target
 								)
 							: original;

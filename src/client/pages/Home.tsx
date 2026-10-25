@@ -88,7 +88,7 @@ export default function Home() {
 							<span>{translate('home.headline')}</span>
 						</h1>
 						<h1>{translate('home.tagline')}</h1>
-						<a class="homebutton" href={route('/browsing')}>
+						<a class="homebutton" href="#scrollfix">
 							{translate('home.browseNow')}
 						</a>
 						<a class="homebutton mobile" href="#scrollfix">
@@ -564,8 +564,8 @@ export function Head() {
 	return (
 		<>
 			<meta http-equiv="x-ua-compatible" content="IE=edge" />
-			<meta name="version" content={values.version} />
 			<SEO>
+				<meta name="version" content={values.version} />
 				<meta name="googlebot" content="index, follow, snippet" />
 				<meta
 					name="robots"

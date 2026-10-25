@@ -1,7 +1,11 @@
 import type { JSX, ParentProps } from 'solid-js';
+import { docsPages } from '../../server/links.ts';
 import { route, SEO, translate, Translation } from '../document-helpers.tsx';
 
 const repo = 'https://github.com/InvisiProxy/InvisiProxyLTS';
+
+const hidden = (name: string) =>
+	Object.hasOwn(docsPages, name) ? route(`/${name}`) : name;
 
 function Ext(props: ParentProps<{ href: string }>) {
 	return (
@@ -27,16 +31,16 @@ const tags = {
 	libcurl: routed('/github/libcurl'),
 	crowdin: (text: string) => (
 		<strong>
-			<Ext href="https://crowdin.com/project/invisiproxy">{text}</Ext>
+			<Ext href={hidden('crowdin')}>{text}</Ext>
 		</strong>
 	),
 	readme: () => (
-		<Ext href={`${repo}/blob/master/locales/README.md`}>
+		<Ext href={hidden('source-readme')}>
 			<code>locales/README.md</code>
 		</Ext>
 	),
-	todo: ext(`${repo}/blob/master/TODO.md`),
-	games: ext(`${repo}/blob/master/views/GAMES.md`),
+	todo: routed('/source-todo'),
+	games: routed('/source-games'),
 	porkbun: ext('https://porkbun.com'),
 	node: ext('https://nodejs.org/'),
 	vsc: (text: string) => <span id="vsc">{text}</span>,
@@ -98,7 +102,7 @@ function Links(props: { urls: string[] }) {
 		<ul>
 			{props.urls.map((url) => (
 				<li>
-					<Ext href={url}>{url}</Ext>
+					<Ext href={hidden(url)}>{docsPages[url] ?? url}</Ext>
 				</li>
 			))}
 		</ul>
@@ -408,7 +412,7 @@ export default function Documentation() {
 			<h3>{translate('docs.deploy.free')}</h3>
 			<p class="docs-badges">
 				<DeployButton
-					href="https://app.koyeb.com/deploy?name=InvisiProxyLTS&type=git&repository=InvisiProxy%2FInvisiProxyLTS&branch=production&builder=dockerfile&ports=8080%3Bhttp%3B%2F"
+					href={hidden('deploy-koyeb')}
 					src="https://binbashbanana.github.io/deploy-buttons/buttons/remade/koyeb.svg"
 					name="Koyeb"
 				/>
@@ -422,12 +426,12 @@ export default function Documentation() {
 				<summary>{translate('docs.deploy.alternatives')}</summary>
 				<p class="docs-badges">
 					<DeployButton
-						href={`https://render.com/deploy?repo=${repo}`}
+						href={hidden('deploy-render')}
 						src="https://render.com/images/deploy-to-render-button.svg"
 						name="Render"
 					/>
 					<DeployButton
-						href={`https://fly.io/launch?repo=${repo}`}
+						href={hidden('deploy-fly')}
 						src="https://img.shields.io/badge/Deploy%20to-Fly.io-blue?logo=fly.io"
 						name="Fly.io"
 					/>
@@ -436,22 +440,22 @@ export default function Documentation() {
 			<h3>{translate('docs.deploy.paid')}</h3>
 			<p class="docs-badges">
 				<DeployButton
-					href={`https://deploy.azure.com/?repository=${repo}`}
+					href={hidden('deploy-azure')}
 					src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/azure.svg"
 					name="Azure"
 				/>
 				<DeployButton
-					href={`https://cloud.ibm.com/devops/setup/deploy?repository=${repo}`}
+					href={hidden('deploy-ibm')}
 					src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/ibmcloud.svg"
 					name="IBM Cloud"
 				/>
 				<DeployButton
-					href={`https://console.aws.amazon.com/amplify/home#/deploy?repo=${repo}`}
+					href={hidden('deploy-aws')}
 					src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/amplifyconsole.svg"
 					name="Amplify Console"
 				/>
 				<DeployButton
-					href={`https://deploy.cloud.run/?git_repo=${repo}`}
+					href={hidden('deploy-cloudrun')}
 					src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/master/buttons/remade/googlecloud.svg"
 					name="Google Cloud"
 					run
@@ -488,14 +492,14 @@ export default function Documentation() {
 					</Ext>
 				</li>
 				<li>
-					<Ext href="https://github.com/aukak/truffled">
+					<Ext href={hidden('truffled-source')}>
 						{translate('docs.partners.partner', {
 							name: 'Truffled',
 						})}
 					</Ext>
 				</li>
 				<li>
-					<Ext href="https://github.com/titaniumnetwork-dev/Obsidian">
+					<Ext href={hidden('obsidian')}>
 						{translate('docs.partners.partner', {
 							name: 'Obsidian',
 						})}
@@ -531,27 +535,18 @@ export default function Documentation() {
 				<p>{translate('docs.ubuntu.mirrors')}</p>
 				<h3>{translate('docs.ubuntu.hosting')}</h3>
 				<p>{translate('docs.ubuntu.hostingBody')}</p>
-				<Links
-					urls={[
-						'https://docs.titaniumnetwork.org/guides/vps-hosting/',
-						`${repo}#deploy-InvisiProxy`,
-						'https://docs.titaniumnetwork.org/guides/dns-setup/',
-					]}
-				/>
+				<Links urls={['guide-vps', 'source-deploy', 'guide-dns']} />
 				<h3>{translate('docs.ubuntu.dependencies')}</h3>
 				<p>{translate('docs.ubuntu.dependenciesBody')}</p>
 				<pre>
 					<code>{ubuntuDependencies()}</code>
 				</pre>
 				<Links
-					urls={[
-						'https://github.com/nvm-sh/nvm',
-						'https://docs.titaniumnetwork.org/guides/nginx/',
-					]}
+					urls={['https://github.com/nvm-sh/nvm', 'guide-nginx']}
 				/>
 				<h3>{translate('docs.ubuntu.tor')}</h3>
 				<p>
-					<Ext href={`${repo}#toronionsocks5-routing-setup`}>
+					<Ext href={hidden('source-tor')}>
 						{`${repo}#toronionsocks5-routing-setup`}
 					</Ext>
 				</p>
@@ -560,7 +555,7 @@ export default function Documentation() {
 				<p>
 					{translate('docs.ubuntu.configureMore')}{' '}
 					<Ext
-						href={`${repo}#configuration`}
+						href={hidden('source-config')}
 					>{`${repo}#configuration`}</Ext>
 				</p>
 				<h3>{translate('docs.ubuntu.run')}</h3>
@@ -577,9 +572,9 @@ export default function Documentation() {
 			<Links
 				urls={[
 					'https://github.com/nvm-sh/nvm',
-					'https://docs.titaniumnetwork.org/guides/nginx/',
-					'https://docs.titaniumnetwork.org/guides/vps-hosting/',
-					'https://docs.titaniumnetwork.org/guides/dns-setup/',
+					'guide-nginx',
+					'guide-vps',
+					'guide-dns',
 				]}
 			/>
 			<h3 id="configuration">{translate('docs.config.title')}</h3>
@@ -623,13 +618,13 @@ export default function Documentation() {
 			<p>{translate('docs.tor.intro')}</p>
 			<p>
 				{translate('docs.tor.guide')}{' '}
-				<Ext href="https://tb-manual.torproject.org/installation/">
+				<Ext href={hidden('tor-browser')}>
 					https://tb-manual.torproject.org/installation/
 				</Ext>
 			</p>
 			<p>
 				{translate('docs.tor.cliGuide')}{' '}
-				<Ext href="https://community.torproject.org/onion-services/setup/install/">
+				<Ext href={hidden('tor-onion')}>
 					https://community.torproject.org/onion-services/setup/install/
 				</Ext>
 			</p>
@@ -863,12 +858,7 @@ export default function Documentation() {
 			</details>
 			<h2 id="more-information">{translate('docs.more.title')}</h2>
 			<p>{translate('docs.more.maintained')}</p>
-			<Links
-				urls={[
-					'https://github.com/titaniumnetwork-dev/',
-					'https://titaniumnetwork.org/',
-				]}
-			/>
+			<Links urls={['tn-github', 'tn-site']} />
 			<p>{translate('docs.more.website')}</p>
 			<h3>{translate('docs.more.sources')}</h3>
 			<p>{translate('docs.more.sourcesBody')}</p>

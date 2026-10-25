@@ -1,6 +1,22 @@
 import { values, route, maskText } from 'build:invisiproxy';
-import { isMobileBrowser, selectedTransport } from '../../../src/browser/transport.ts';
+import { BareCompatibleClient } from '@mercuryworkshop/proxy-transports';
+import {
+  isMobileBrowser,
+  openTransport,
+  proxyRegions,
+  selectedTransport,
+  selectedWisp,
+} from '../../../src/browser/transport.ts';
 import { customWispUrl } from '../../../src/browser/chain.ts';
+import {
+  customUserAgent,
+  customUserAgentValue,
+  presetCategories,
+  presetLabel,
+  storedCategory,
+  storedUserAgent,
+  userAgentPresets,
+} from '../../../src/browser/fingerprint.ts';
 /* -----------------------------------------------
 /* Authors: Yoct, OlyB, b4kt
 /* GNU Affero General Public License v3.0: https://www.gnu.org/licenses/agpl-3.0.en.html
@@ -14,6 +30,26 @@ import { customWispUrl } from '../../../src/browser/chain.ts';
 let date = new Date();
 date.setFullYear(date.getFullYear() + 100);
 date = date.toUTCString();
+
+const maskCharacters = new RegExp(
+  `[­​${values.characters
+    .map((entity) =>
+      entity.replace(/&#(x?)([\da-f]+);/gi, (_, hex, code) =>
+        String.fromCodePoint(Number.parseInt(code, hex ? 16 : 10))
+      )
+    )
+    .join('')}]`,
+  'gu'
+);
+
+if (!values.usingSEO)
+  document.addEventListener('copy', (e) => {
+    const selected = document.getSelection()?.toString() || '',
+      plain = selected.replace(maskCharacters, '');
+    if (!e.clipboardData || plain === selected) return;
+    e.clipboardData.setData('text/plain', plain);
+    e.preventDefault();
+  });
 
 // Cookies will not be used unless necessary. The localStorage API will be used instead.
 const storageId = `${values.storageNamespace}-storage`,
@@ -60,18 +96,80 @@ const storageId = `${values.storageNamespace}-storage`,
     let tag =
       document.getElementsByTagName('title')[0] ||
       document.createElement('title');
-    tag.innerHTML = value;
+    tag.textContent = value;
     document.head.appendChild(tag);
   },
-  // Set the page's favicon to a new URL.
-  pageIcon = (value) => {
+  setIconHref = (href) => {
     let tags = document.querySelectorAll("link[rel*='icon']") || [
       document.createElement('link'),
     ];
     tags.forEach((element) => {
       element.rel = 'icon';
-      element.href = value;
+      element.href = href;
       document.head.appendChild(element);
+    });
+  },
+  iconCacheKey = `${values.storageNamespace}-icon-cache`,
+  isLocalIcon = (value) => {
+    try {
+      const url = new URL(value, location.href);
+      return url.origin === location.origin || ['data:', 'blob:'].includes(url.protocol);
+    } catch {
+      return false;
+    }
+  },
+  iconTransport = async () => {
+    if (window.$invisiScramjetInitializing) await window.$invisiScramjetInitializing;
+    if (window.$invisiScramjet?.ready) return window.$invisiScramjet.controller.transport;
+    if (window.$invisiScramjetError) return null;
+    const transportName = selectedTransport(readStorage('Transport'));
+    return openTransport(
+      route(`/${transportName}/index.mjs`),
+      selectedWisp(
+        storageObject(),
+        transportName,
+        proxyRegions(values.patreon),
+        `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${route('/wisp/')}`
+      )
+    );
+  },
+  proxiedIcon = async (value) => {
+    try {
+      const url = new URL(value);
+      if (!['http:', 'https:'].includes(url.protocol)) return null;
+      const transport = await iconTransport();
+      if (!transport) return null;
+      const response = await new BareCompatibleClient(transport).fetch(url.href);
+      const type = response.headers.get('content-type') || '';
+      if (!response.ok || !type.startsWith('image/')) return null;
+      const blob = new Blob([await response.arrayBuffer()], { type });
+      if (blob.size > 256 * 1024) return null;
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => resolve(reader.result), { once: true });
+        reader.addEventListener('error', () => reject(reader.error), { once: true });
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.warn('Unable to load tab icon:', value, error);
+      return null;
+    }
+  },
+  // Set the page's favicon to a new URL.
+  pageIcon = (value) => {
+    if (isLocalIcon(value)) return setIconHref(value);
+    let cached = null;
+    try {
+      cached = JSON.parse(localStorage.getItem(iconCacheKey));
+    } catch {}
+    if (cached?.url === value && cached.data?.startsWith('data:image/'))
+      return setIconHref(cached.data);
+    proxiedIcon(value).then((data) => {
+      if (!data || readStorage('Icon') !== value) return;
+      try {
+        localStorage.setItem(iconCacheKey, JSON.stringify({ url: value, data }));
+      } catch {}
+      setIconHref(data);
     });
   },
   // Make a small stylesheet to override a setting from the main stylesheet.
@@ -385,6 +483,96 @@ if (document.getElementById('csel')) {
   };
   attachAddressForm('wispform', 'CustomWisp', customWispUrl);
 
+  attachClassEventListener('randomize-fingerprint', 'change', (e) => {
+    if (checkBooleanState(e.target) === true)
+      setStorage('RandomizeFingerprint', true);
+    else removeStorage('RandomizeFingerprint');
+    try {
+      sessionStorage.removeItem(`${storageId}-fingerprint`);
+    } catch {}
+    if (e.isTrusted) location.reload();
+  });
+
+  const storedAgent = readStorage('UserAgent'),
+    agentCategory = storedCategory(storedAgent),
+    orderedPresets = presetCategories.flatMap((category) =>
+      userAgentPresets.filter((preset) => preset.category === category)
+    ),
+    fingerprintViews = [...document.querySelectorAll('.fingerprint-view')],
+    fingerprintPanels = [...document.querySelectorAll('.fingerprint-panel')],
+    showFingerprintView = (index) => {
+      fingerprintViews.forEach((view, i) => {
+        view.classList.toggle('is-active', i === index);
+        view.setAttribute('aria-selected', String(i === index));
+      });
+      fingerprintPanels.forEach((panel, i) => {
+        panel.hidden = i !== index;
+      });
+    };
+  fingerprintViews.forEach((view, index) =>
+    view.addEventListener('click', () => showFingerprintView(index))
+  );
+  showFingerprintView(
+    agentCategory === 'custom'
+      ? presetCategories.length
+      : Math.max(0, presetCategories.indexOf(agentCategory))
+  );
+
+  document.querySelectorAll('.fingerprint-preset').forEach((button, index) => {
+    const preset = orderedPresets[index];
+    if (!preset) return;
+    button.classList.toggle('is-selected', preset.id === storedAgent);
+    button.addEventListener('click', () => {
+      setStorage('UserAgent', preset.id);
+      location.reload();
+    });
+  });
+
+  document.querySelectorAll('.fingerprint-custom').forEach((form) => {
+    const input = form.querySelector('input[type=text]');
+    if (agentCategory === 'custom') input.value = storedUserAgent(storedAgent);
+    input.addEventListener('input', () => input.setCustomValidity(''));
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const agent = customUserAgent(input.value);
+      if (!agent) {
+        input.setCustomValidity(input.dataset.invalid);
+        input.reportValidity();
+        return;
+      }
+      setStorage('UserAgent', customUserAgentValue(agent));
+      location.reload();
+    });
+  });
+
+  document.querySelectorAll('.fingerprint-reset').forEach((button) =>
+    button.addEventListener('click', () => {
+      removeStorage('UserAgent');
+      location.reload();
+    })
+  );
+
+  document.querySelectorAll('.fingerprint-status').forEach((status) => {
+    const name =
+      agentCategory === 'custom'
+        ? fingerprintViews.at(-1)?.textContent
+        : presetLabel(storedAgent) ?? status.dataset.default;
+    status.textContent = maskText(status.dataset.template.replace('{name}', name));
+  });
+
+  [
+    ['collapse-browsing', 'BrowsingSectionOpen'],
+    ['collapse-tab', 'TabSectionOpen'],
+    ['collapse-fingerprint', 'FingerprintSectionOpen'],
+  ].forEach(([name, key]) => {
+    for (const section of document.getElementsByClassName(name)) {
+      section.open = readStorage(key) === true;
+      section.addEventListener('toggle', () =>
+        section.open ? setStorage(key, true) : removeStorage(key)
+      );
+    }
+  });
+
   attachEventListener('clear-site-data', 'click', async (e) => {
     if (!confirm(e.currentTarget.dataset.confirm)) return;
     try {
@@ -394,8 +582,10 @@ if (document.getElementById('csel')) {
   });
 
   attachClassEventListener('cloak-type-list', 'change', (e) => {
-    const value = e.target.value;
-    value === 'none'
+    const value = Object.keys(values.cloakTypes).find(
+      (type) => values.cloakTypes[type] === e.target.value
+    );
+    !value || value === 'none'
       ? removeStorage('LaunchType')
       : setStorage('LaunchType', value);
     if (e.isTrusted) location.reload();
@@ -509,14 +699,20 @@ useStorageArgs('SearchEngine', (s) => {
 });
 
 const mobileBrowser = isMobileBrowser(),
-  transportName = selectedTransport(readStorage('Transport'), mobileBrowser);
+  transportName = selectedTransport(readStorage('Transport'), mobileBrowser),
+  transportValue = (name) => values.aliases[`prefixes/${name}`] || name;
 if (mobileBrowser || transportName === 'epoxy') setStorage('Transport', transportName);
 else if (readStorage('Transport') !== undefined) removeStorage('Transport');
 for (const transportSelector of document.getElementsByClassName('transport-list')) {
-  transportSelector.value = transportName;
+  transportSelector.value = transportValue(transportName);
   transportSelector.closest('.transport-setting').hidden = mobileBrowser;
   transportSelector.addEventListener('change', () => {
-    setStorage('Transport', transportSelector.value);
+    setStorage(
+      'Transport',
+      ['libcurl', 'epoxy'].find(
+        (name) => transportValue(name) === transportSelector.value
+      ) || 'libcurl'
+    );
     location.reload();
   });
 }
@@ -608,10 +804,18 @@ useStorageArgs('BlockWebRTC', (s) => {
     classUpdateHandler(document.getElementsByClassName('block-webrtc'), 'on')();
 });
 
+useStorageArgs('RandomizeFingerprint', (s) => {
+  if (s === true)
+    classUpdateHandler(
+      document.getElementsByClassName('randomize-fingerprint'),
+      'on'
+    )();
+});
+
 useStorageArgs('LaunchType', (s) => {
   classUpdateHandler(
     document.getElementsByClassName('cloak-type-list'),
-    s || 'none'
+    values.cloakTypes[s] || values.cloakTypes.none
   )();
 });
 })();

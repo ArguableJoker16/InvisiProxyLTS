@@ -131,10 +131,6 @@ export function Head() {
 						font-optical-sizing: auto;
 					}
 
-					#password-field {
-						display: none;
-					}
-
 					h1 {
 						color: #ff5861;
 						font-size: clamp(22px, 6vw, 64px);

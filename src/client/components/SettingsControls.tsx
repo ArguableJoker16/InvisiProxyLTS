@@ -1,4 +1,21 @@
-import { translate } from '../document-helpers.tsx';
+import type { ParentProps } from 'solid-js';
+import { translate, values } from '../document-helpers.tsx';
+
+export function SettingsSection(
+	props: ParentProps<{ title: string; class: string; last?: boolean }>
+) {
+	return (
+		<details
+			class={`settings-card settings-collapse ${props.class}${props.last ? ' settings-card-last' : ''}`}
+		>
+			<summary class="settings-collapse-header">
+				<h2 class="cseltitle">{props.title}</h2>
+				<span class="proxy-settings-arrow" aria-hidden="true" />
+			</summary>
+			<div class="settings-collapse-body">{props.children}</div>
+		</details>
+	);
+}
 
 export function SettingToggle(props: {
 	label: string;
@@ -48,6 +65,9 @@ export function AddressField(props: {
 	);
 }
 
+const transportValue = (name: string) =>
+	values.aliases[`prefixes/${name}`] || name;
+
 export function TransportSelect(props: { id: string; containerId: string }) {
 	return (
 		<div id={props.containerId} class="transport-setting setting-field">
@@ -59,10 +79,10 @@ export function TransportSelect(props: { id: string; containerId: string }) {
 				class="transport-list"
 				aria-label={translate('settings.browsing.transport')}
 			>
-				<option value="libcurl" selected>
+				<option value={transportValue('libcurl')} selected>
 					Libcurl
 				</option>
-				<option value="epoxy">Epoxy</option>
+				<option value={transportValue('epoxy')}>Epoxy</option>
 			</select>
 		</div>
 	);

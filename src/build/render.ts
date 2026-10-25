@@ -10,7 +10,9 @@ import {
 	routesFile,
 } from '../constants.ts';
 import data from '../data.json' with { type: 'json' };
+import { elementIds } from '../obfuscation/classes.ts';
 import { obfuscateDocument } from '../obfuscation/documents.ts';
+import { maskText } from '../obfuscation/masks.ts';
 import type { SiteValues } from '../site.ts';
 import { getPathAliases } from '../obfuscation/paths.ts';
 import {
@@ -89,16 +91,23 @@ export function getPlainDocuments(fresh = false, load?: LoadRenderer) {
 export async function proxyErrorTemplates(): Promise<SiteValues['errors']> {
 	const path = 'pages/proxnav/scramjet-error.html';
 	const html = (await getPlainDocuments())[path];
-	const script =
-		/<script\b[^>]*\bid="proxy-error-script"[^>]*\bsrc="([^"]*)"[^>]*>/.exec(
-			html
-		);
+	const allIds = elementIds();
+	const scriptId = allIds['proxy-error-script'] || 'proxy-error-script';
+	const script = new RegExp(
+		`<script\\b[^>]*\\bid="${scriptId}"[^>]*\\bsrc="([^"]*)"[^>]*>`
+	).exec(html);
 	if (!script) throw new Error(`Missing error script element in ${path}`);
 	const offset = script.index + script[0].indexOf('src="') + 5;
+	const ids = Object.fromEntries(
+		['fetchedURL', 'errorTrace', 'scramjetVersion', 'reload', 'copy-button']
+			.filter((id) => allIds[id])
+			.map((id) => [id, allIds[id]])
+	);
 	return {
 		scramjet: {
 			beforeScript: html.slice(0, offset),
 			afterScript: html.slice(offset + script[1].length),
+			ids,
 		},
 	};
 }
@@ -152,7 +161,7 @@ export async function renderSite({
 	files[routesFile] = JSON.stringify(await siteRoutes(load));
 	files[
 		`assets/json/${getPathAliases()['files/splash.json'] || 'splash.json'}`
-	] = JSON.stringify(data.splash);
+	] = JSON.stringify(data.splash.map(maskText));
 	const locales = builtLocales(loadLocales());
 	const root = locales[0].code;
 	const plain = await getPlainDocuments(fresh, load);

@@ -1,12 +1,25 @@
 import { values, route } from 'build:invisiproxy';
 import { renderProxyError } from 'build:invisiproxy-errors';
-import { selectedTransport } from '../../../src/browser/transport.ts';
+import {
+  openTransport,
+  proxyRegions,
+  selectedTransport,
+  selectedWisp,
+} from '../../../src/browser/transport.ts';
 import {
   installScramjetSearchUrlGuard,
   needsSearchUrlGuard,
 } from '../../../src/browser/search-url-guard.ts';
 import { leakFrame } from '../../../src/browser/leak-guard.ts';
 import { blockWebrtc } from '../../../src/browser/webrtc.ts';
+import {
+  profileFromUserAgent,
+  randomizeFingerprint,
+  rewriteHeaders,
+  sessionFingerprint,
+  spoofNavigator,
+  storedUserAgent,
+} from '../../../src/browser/fingerprint.ts';
 import {
   autoSiteFixes,
   fixFetchHandler,
@@ -16,20 +29,19 @@ import {
   scriptSafeBody,
   stableCacheKeys,
 } from '../../../src/browser/site-fixes.ts';
-import { customWispUrl } from '../../../src/browser/chain.ts';
 import {
   errorPageScript,
   errorTrace,
   proxiedUrl,
 } from '../../../src/browser/error-page.ts';
+import { proxyCodec } from '../../../src/browser/proxy-codec.ts';
 (() => {
   const swScope = route("/"),
     swAllowedHostnames = ['localhost', '127.0.0.1'],
     // Regional/Tor proxies are configured server-side (src/server/wisp.ts).
     // The client only selects the matching Wisp endpoint.
-    regions = ['tor', 'eu', 'jp', ...(values.patreon ? ['patreon'] : [])],
-    wispUrl = (region) =>
-      `${(location.protocol === 'https:' ? 'wss' : 'ws')}://${location.host}${route("/wisp/")}${region ? region + '/' : ''}`,
+    regions = proxyRegions(values.patreon),
+    wispBase = `${(location.protocol === 'https:' ? 'wss' : 'ws')}://${location.host}${route("/wisp/")}`,
     storageId = `${values.storageNamespace}-storage`,
     storageObject = () => JSON.parse(localStorage.getItem(storageId)) || {},
     readStorage = (name) => storageObject()[name];
@@ -38,16 +50,9 @@ import {
     transportUrl = route(`/${transportName}/index.mjs`),
     siteFixes = readStorage('ExperimentalSiteFixes') === true;
 
-  const getTransportOptions = () => {
-    const selected = readStorage('UseSocks5');
-    return {
-      wisp:
-        customWispUrl(readStorage('CustomWisp')) ??
-        wispUrl(
-          transportName === 'libcurl' && regions.includes(selected) ? selected : ''
-        ),
-    };
-  };
+  const getTransportOptions = () => ({
+    wisp: selectedWisp(storageObject(), transportName, regions, wispBase),
+  });
 
   const getSWRoute = () =>
     route(readStorage('HideAds') !== false ? '/sw-blacklist.js' : '/sw.js');
@@ -112,13 +117,7 @@ import {
   };
 
   /** @returns {Promise<import("@mercuryworkshop/proxy-transports").ProxyTransport>} */
-  const buildScramjetTransport = async (options) => {
-    const mod = await import(transportUrl);
-    const TransportClient = mod.default;
-    const transport = new TransportClient(options);
-    await transport.init();
-    return transport;
-  };
+  const buildScramjetTransport = (options) => openTransport(transportUrl, options.wisp);
 
   const buildSearchUrlGuardPlugin = () =>
     new (class extends $scramjetController.ManagedPlugin {
@@ -159,6 +158,32 @@ import {
         });
       }
     })();
+
+  const buildFingerprintPlugin = () => {
+    const session =
+      readStorage('RandomizeFingerprint') === true
+        ? sessionFingerprint(sessionStorage, `${storageId}-fingerprint`)
+        : null;
+    const userAgent =
+      storedUserAgent(readStorage('UserAgent')) ?? session?.preset.userAgent;
+    const profile = userAgent ? profileFromUserAgent(userAgent) : null;
+    return new (class extends $scramjetController.ManagedPlugin {
+      constructor() {
+        super('browser-fingerprint', []);
+      }
+      install(frame) {
+        super.install(frame);
+        if (profile)
+          this.tap(frame.hooks.fetch.request, (_context, props) => {
+            props.init.headers = rewriteHeaders(props.init.headers, profile);
+          });
+        this.tap(frame.hooks.init.post, ({ window: win }) => {
+          if (profile) spoofNavigator(win, profile);
+          if (session) randomizeFingerprint(win, session.noise, profile);
+        });
+      }
+    })();
+  };
 
   const buildSiteFixesPlugin = () =>
     new (class extends $scramjetController.ManagedPlugin {
@@ -237,6 +262,7 @@ import {
                 url: proxiedUrl(rawrequest.rawUrl, frame.prefix),
                 trace: errorTrace(error),
                 version: `v${version} - build ${build}`,
+                ids: values.errors.scramjet?.ids,
               })
             ),
             headers: [['content-type', 'text/html; charset=utf-8']],
@@ -253,6 +279,7 @@ import {
       buildSearchUrlGuardPlugin(),
       buildLeakGuardPlugin(),
       buildBlockWebrtcPlugin(),
+      buildFingerprintPlugin(),
       buildSiteFixesPlugin(),
     ];
     if (typeof $scramjetUtils === 'undefined') return plugins;
@@ -305,6 +332,7 @@ import {
           scramjetPath: route("/scram/scramjet.js"),
           wasmPath: route("/scram/scramjet.wasm"),
           injectPath: route("/scram/controller.inject.js"),
+          codec: proxyCodec(),
         },
         scramjetConfig: {
           ...defaultConfig,
@@ -362,6 +390,7 @@ import {
       if (window.$invisiScramjet?.ready) initialize();
     });
   } else {
+    fetch(route("/scram/scramjet.wasm")).catch(() => {});
     window.$invisiScramjetInitializing = initialize().finally(() => {
       delete window.$invisiScramjetInitializing;
     });

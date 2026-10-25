@@ -11,21 +11,26 @@ import AntiExfil from '../components/AntiExfil.tsx';
 import Settings from '../components/Settings.tsx';
 
 function FrameMenu(
-	props: ParentProps<{ id: string; title: string; button: JSX.Element }>
+	props: ParentProps<{
+		buttonId: string;
+		menuId: string;
+		title: string;
+		button: JSX.Element;
+	}>
 ) {
 	return (
 		<div class="dropdown-parent" title={props.title}>
 			<button
 				type="button"
 				class="link-button"
-				id={`${props.id}-button`}
+				id={props.buttonId}
 				aria-label={props.title}
 			>
 				{props.button}
 			</button>
 			<section
 				class="dropdown-settings"
-				id={`${props.id}-menu`}
+				id={props.menuId}
 				tabindex="0"
 				aria-label={props.title}
 			>
@@ -101,7 +106,8 @@ export default function ProxyFrame() {
 					<ul id="autocomplete"></ul>
 				</div>
 				<FrameMenu
-					id="tabs"
+					buttonId="tabs-button"
+					menuId="tabs-menu"
 					title={translate('frame.tabs')}
 					button={
 						<>
@@ -126,7 +132,8 @@ export default function ProxyFrame() {
 					</button>
 				</FrameMenu>
 				<FrameMenu
-					id="bookmarks"
+					buttonId="bookmarks-button"
+					menuId="bookmarks-menu"
 					title={translate('frame.bookmarks')}
 					button={<i class="fas fa-bookmark" aria-hidden="true"></i>}
 				>
