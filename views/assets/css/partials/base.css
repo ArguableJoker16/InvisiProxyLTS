@@ -214,15 +214,6 @@ details[open] summary {
 	display: none;
 }
 
-#password-field {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0 0 0 0);
-}
-
 .bigtitle {
 	font-size: 42px;
 	color: var(--bigtitle-color, rgb(255, 88, 97));

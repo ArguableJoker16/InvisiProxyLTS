@@ -43,6 +43,34 @@ language:
     - Games
     - Croxy
     - CroxyProxy
+    - Proxium
+    - SOCKS
+    - SOCKS5
+    - Proxychain
+    - Proxychaining
+    - Censorship
+    - Firewall
+    - Firewalls
+    - Anonymous
+    - Anonymity
+    - Block
+    - Filter
+    - Restrict
+    - Censor
+    - Evade
+    - Evasion
+    - Stealth
+    - Cloak
+    - Incognito
+    - Disguise
+    - Chromebook
+    - School
+    - Libcurl
+    - Epoxy
+    - Bare-Mux
+    - Mercury Workshop
+    - WebRTC
+    - Mirror
     - Proxy
     - Proxies
     - Proxied
@@ -252,7 +280,7 @@ settings:
     automatic: Automatic
 
   tab:
-    title: Tab appearance
+    title: Disguise Browser Tab
     description: Customize the title and icon shown in your browser tab.
     iconPreset: Icon preset
     selectPreset: Select an icon preset
@@ -261,6 +289,27 @@ settings:
     iconUrl: Icon URL
     apply: Apply
     findIcon: Find an icon URL →
+
+  fingerprint:
+    title: Disguise Fingerprinting
+    description: >-
+      Choose which browser proxied sites see. This changes the user agent sent
+      with requests and the one reported to page scripts.
+    current: 'Current: {name}'
+    default: Browser default
+    reset: Use browser default
+    views:
+      desktop: Desktop
+      mobile: Mobile
+      console: Console
+      bot: Search engine
+      custom: Custom
+    botWarning: >-
+      Many sites verify search engine crawlers and may block or change pages
+      for this view.
+    customLabel: Custom user agent
+    customPlaceholder: Mozilla/5.0 (…)
+    invalidCustom: Enter a single line user agent of up to 512 characters.
 
   browsing:
     title: Browsing
@@ -312,6 +361,9 @@ header:
   settingsMenu: Settings menu
   toggleMenu: Toggle navigation menu
   donate: Support us on Patreon
+  overview:
+    label: Overview
+    title: Overview - Learn what this site offers
   browse:
     label: Browse
     title: Browse - Bypass restrictions on the web
@@ -385,7 +437,9 @@ mirrors:
 proxySettings:
   donate: >-
     We offer premium domains, beta features, residential ISP connections and
-    faster speeds. You can donate on <patreon>Patreon</patreon>.
+    faster speeds. You can donate on <patreon>Patreon</patreon>.<br/>
+    Enable Tor or Regional routing if you are struggling to use services. View the
+    <faq>FAQ</faq> page if you have any issues with the proxy.
   title: Proxy Preferences
   connection: Connection
   searchNavFix: Enable site fixes
@@ -395,10 +449,15 @@ proxySettings:
   experimentalSiteFixes: Experimental site fixes
   experimentalSiteFixesDescription: >-
     Mix of manual site support fixes. May break sites and leak real IP; use at own risk.
-  hideHistoryDescription: Reduce saved history. May affect some sites.
+  hideHistoryDescription: Hide local browsing history. Networks can still sniff history but it is proxied.
+  randomizeFingerprint: Randomize browser fingerprint
+  randomizeFingerprintDescription: >-
+    Uses a random desktop browser for each tab session and adds noise to
+    canvas, WebGL, CPU and memory readings. A chosen user agent still wins.
+    May break some sites.
   customWisp: Custom Wisp server
   customWispDescription: >-
-    Route proxy traffic through your own Wisp server for better privacy control. Leave empty to turn off.
+    Route proxy traffic through your own Wisp server for better privacy control. If you wish to route all your traffic via self-hosting this is a lightweight method. Utilize the frontend here but have respective traffic go to your own servers. Leave empty to turn off.
   invalidWisp: Enter a ws:// or wss:// address.
   moreSettings: View more settings
   anotherLink: Need another link? Click the <mirrors>mirror links button</mirrors>.
@@ -1226,6 +1285,17 @@ apps:
     enable Tor routing or edit Regional Settings if you have any issues. For
     GeForce Now support please disable ads via the proxy settings.
   faq: View the <faq>FAQ</faq> page if you have any issues with the proxy.
+  loading: Loading applications…
+  categories:
+    all: All
+    social: Social
+    chat: Chat
+    video: Video
+    music: Music
+    games: Games
+    ai: AI
+    education: Education
+    opensource: Open source
 
 partners:
   title: Partner Services
@@ -1279,16 +1349,6 @@ scramjet:
     as service workers and sophisticated rewriting techniques with CAPTCHA
     support. Scramjet focuses on speed with YouTube, now.gg, Spotify,
     CoolMathGames and various .io sites!
-  intro: >-
-    <scramjet>Scramjet</scramjet> is a web proxy designed with performance and
-    security in mind to evade internet censorship, bypass arbitrary web browser
-    restrictions and innovate web proxy technologies. This allows you to browse
-    various websites with higher level of privacy and access popular resources
-    like Discord, GeForce NOW, Twitter and YouTube on restricted
-    networks.<br/><br/>For CAPTCHA challenges please solve them slowly.
-    Scramjet is so fast you might get stuck in a loop.<br/>Enable Tor routing
-    if you are struggling to login to services or view<br/>View the
-    <faq>FAQ</faq> page if you have any issues with the proxy.
   searchPlaceholder: Type a URL here or enter a search query!
   search: SEARCH
 
