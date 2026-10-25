@@ -13,12 +13,19 @@ const { pages } = (
 		'src/server/routes.ts'
 	)
 ).loadRoutes();
-const { classNames } = await load<
+const { classNames, elementIds } = await load<
 	typeof import('../../src/obfuscation/classes.ts')
 >('src/obfuscation/classes.ts');
 
 const classes = classNames();
 const cls = (name: string) => `.${classes[name] ?? name}`;
+const ids = elementIds();
+const id = (name: string) => `#${ids[name] ?? name}`;
+const { getPathAliases } = await load<
+	typeof import('../../src/obfuscation/paths.ts')
+>('src/obfuscation/paths.ts');
+const aliases = getPathAliases();
+const transportValue = (name: string) => aliases[`prefixes/${name}`] ?? name;
 const strip = (text: string) =>
 	text.replace(/[\u00ad\u200b-\u200f\u2060-\u206f]|\ufe0f/g, '');
 const origin = String(process.env.INVISIPROXY_ORIGIN);
@@ -72,16 +79,16 @@ try {
 	await page.goto(route('pages/nav/partners.html'));
 	await page.getByText('403 Forbidden').waitFor();
 	await page.goto(base);
-	await page.locator('#dispense-link').waitFor({ state: 'attached' });
+	await page.locator(id('dispense-link')).waitFor({ state: 'attached' });
 	await page.goto(route('pages/nav/partners.html'));
-	await page.locator('#dispense-link').waitFor({ state: 'attached' });
+	await page.locator(id('dispense-link')).waitFor({ state: 'attached' });
 
 	const toggle = page.locator(cls('mirror-links-toggle'));
 	const label = (await toggle.locator('span').textContent()) ?? '';
 	assert.notEqual(label, strip(label), 'Button text should be masked.');
 	assert.equal(strip(label), 'Mirrors');
 
-	const button = page.locator('#dispense-link');
+	const button = page.locator(id('dispense-link'));
 	const buttonClass = (await button.getAttribute('class')) ?? '';
 	assert.ok(buttonClass.includes(classes.fancybutton));
 	assert.doesNotMatch(buttonClass, /fancybutton/);
@@ -93,7 +100,7 @@ try {
 
 	await toggle.click();
 	await button.click();
-	const link = page.locator('#dispensed-link');
+	const link = page.locator(id('dispensed-link'));
 	await link.waitFor({ state: 'visible' });
 	assert.ok(
 		['https://first.example/', 'https://second.example/'].includes(
@@ -102,22 +109,24 @@ try {
 	);
 	await button.click();
 	await link.waitFor({ state: 'hidden' });
-	assert.ok(await page.locator('#dispenser-status').textContent());
+	assert.ok(await page.locator(id('dispenser-status')).textContent());
 
 	await page.locator(cls('settings-toggle')).first().click();
 	await page.waitForFunction((selector) => {
 		const menu = document.querySelector(selector);
 		return menu && getComputedStyle(menu).opacity === '1';
 	}, cls('dropdown-settings'));
-	await page.locator('#settings-theme').selectOption('light');
+	for (const section of ['collapse-browsing', 'collapse-tab'])
+		await page.locator(`${cls(section)} > summary`).click();
+	await page.locator(id('settings-theme')).selectOption('light');
 	const title = await page.title();
-	await page.locator('#icon-list').selectOption({ index: 1 });
+	await page.locator(id('icon-list')).selectOption({ index: 1 });
 	await page.waitForFunction(
 		(title) =>
 			document.title !== title &&
-			document
-				.querySelector<HTMLLinkElement>('link[rel="icon"]')
-				?.href.startsWith('https://'),
+			Object.keys(localStorage).some((key) =>
+				/"Icon":"https:/.test(localStorage.getItem(key) ?? '')
+			),
 		title
 	);
 	const presetTitle = await page.title();
@@ -135,25 +144,27 @@ try {
 			() => window.$invisiScramjet?.ready === true
 		);
 		if (transport === 'epoxy') {
-			await page.locator('#settings-panel > summary').click();
+			await page.locator(`${id('settings-panel')} > summary`).click();
 			await Promise.all([
 				page.waitForEvent('load'),
-				page.locator('#browsing-transport').selectOption(transport),
+				page
+					.locator(id('browsing-transport'))
+					.selectOption(transportValue(transport)),
 			]);
 			await page.waitForFunction(
 				() => window.$invisiScramjet?.ready === true
 			);
 		}
 		assert.equal(
-			await page.locator('#browsing-transport').inputValue(),
-			transport
+			await page.locator(id('browsing-transport')).inputValue(),
+			transportValue(transport)
 		);
 		await page
-			.locator('#search-input')
+			.locator(id('search-input'))
 			.fill(`http://127.0.0.1:${targetPort}/`);
-		await page.locator('#search-input').press('Enter');
+		await page.locator(id('search-input')).press('Enter');
 		await page
-			.frameLocator('#frame')
+			.frameLocator(id('frame'))
 			.locator('html[data-proxy-smoke="executed"]')
 			.waitFor()
 			.catch((cause) => {
@@ -164,30 +175,34 @@ try {
 			});
 	}
 
-	await page.locator('#search-input').fill('http://127.0.0.1:9/unreachable');
-	await page.locator('#search-input').press('Enter');
-	const errorPage = page.frameLocator('#frame');
+	await page
+		.locator(id('search-input'))
+		.fill('http://127.0.0.1:9/unreachable');
+	await page.locator(id('search-input')).press('Enter');
+	const errorPage = page.frameLocator(id('frame'));
 	await errorPage
-		.locator('#fetchedURL', { hasText: 'http://127.0.0.1:9/unreachable' })
+		.locator(id('fetchedURL'), {
+			hasText: 'http://127.0.0.1:9/unreachable',
+		})
 		.waitFor();
-	assert.match(await errorPage.locator('#errorTrace').inputValue(), /\S/);
+	assert.match(await errorPage.locator(id('errorTrace')).inputValue(), /\S/);
 	assert.match(
-		(await errorPage.locator('#scramjetVersion').textContent()) ?? '',
+		(await errorPage.locator(id('scramjetVersion')).textContent()) ?? '',
 		/^v\d\S* - build \w+$/
 	);
 
 	const webrtcResult = async () =>
 		JSON.parse(
 			(await page
-				.frameLocator('#frame')
+				.frameLocator(id('frame'))
 				.locator('html[data-webrtc]')
 				.getAttribute('data-webrtc')) ?? '{}'
 		);
 	const openWebrtcPage = async () => {
 		await page
-			.locator('#search-input')
+			.locator(id('search-input'))
 			.fill(`http://127.0.0.1:${targetPort}/webrtc`);
-		await page.locator('#search-input').press('Enter');
+		await page.locator(id('search-input')).press('Enter');
 		return webrtcResult();
 	};
 	assert.deepEqual(await openWebrtcPage(), {

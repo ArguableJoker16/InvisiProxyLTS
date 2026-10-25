@@ -12,7 +12,7 @@ const { createSiteHandler } = await load<
 >('src/server/handler.ts');
 const { config, serverUrl } =
 	await load<typeof import('../../src/config.ts')>('src/config.ts');
-const { getPathAliases } = await load<
+const { apiPath, getPathAliases } = await load<
 	typeof import('../../src/obfuscation/paths.ts')
 >('src/obfuscation/paths.ts');
 const { pages } = (
@@ -91,7 +91,7 @@ try {
 		assert.ok(!response.body.includes('PRIVATE_TEST_MARKER'), path);
 	}
 
-	const api = await app.inject({ method: 'POST', url: `${base}api/link` });
+	const api = await app.inject({ method: 'POST', url: `${base}${apiPath('link')}` });
 	assert.equal(api.statusCode, 200);
 	assert.equal(api.headers['cache-control'], 'no-store');
 	assert.ok(
@@ -100,7 +100,7 @@ try {
 		)
 	);
 	assert.equal(
-		(await app.inject({ method: 'POST', url: `${base}api/link` }))
+		(await app.inject({ method: 'POST', url: `${base}${apiPath('link')}` }))
 			.statusCode,
 		429
 	);
@@ -108,7 +108,7 @@ try {
 	const clear = (site: string) =>
 		app.inject({
 			method: 'POST',
-			url: `${base}api/clear`,
+			url: `${base}${apiPath('clear')}`,
 			headers: { 'sec-fetch-site': site },
 		});
 	assert.equal(
